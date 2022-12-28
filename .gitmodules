@@ -4,8 +4,8 @@
   #branch = develop
   url = https://github.com/NOAA-EMC/spack
   branch = jcsda_emc_spack_stack
-[submodule "spack/dummy"]
-  path = spack/dummything
+[submodule "dummything"]
+  path = dummything
   url = https://github.com/AlexanderRichert-NOAA/dummy
   branch = main
 [submodule "doc/CMakeModules"]

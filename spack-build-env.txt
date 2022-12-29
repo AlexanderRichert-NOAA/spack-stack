@@ -1,0 +1,350 @@
+AWKLIBPATH=/usr/lib64/gawk; export AWKLIBPATH
+AWKPATH=.:/usr/share/awk; export AWKPATH
+BASH_ENV=/usr/share/lmod/lmod/init/bash; export BASH_ENV
+function BASH_FUNC__spack_shell_wrapper%%() {  for var in LD_LIBRARY_PATH DYLD_LIBRARY_PATH DYLD_FALLBACK_LIBRARY_PATH;
+ do
+ eval "if [ -n \"\${${var}-}\" ]; then export SPACK_$var=\${${var}}; fi";
+ done;
+ if [ -n "${ZSH_VERSION:-}" ]; then
+ emulate -L sh;
+ fi;
+ _sp_flags="";
+ while [ ! -z ${1+x} ] && [ "${1#-}" != "${1}" ]; do
+ _sp_flags="$_sp_flags $1";
+ shift;
+ done;
+ if [ -n "$_sp_flags" ] && [ "${_sp_flags#*h}" != "${_sp_flags}" ] || [ "${_sp_flags#*V}" != "${_sp_flags}" ]; then
+ command spack $_sp_flags "$@";
+ return;
+ fi;
+ _sp_subcommand="";
+ if [ ! -z ${1+x} ]; then
+ _sp_subcommand="$1";
+ shift;
+ fi;
+ case $_sp_subcommand in 
+ "cd")
+ _sp_arg="";
+ if [ -n "$1" ]; then
+ _sp_arg="$1";
+ shift;
+ fi;
+ if [ "$_sp_arg" = "-h" ] || [ "$_sp_arg" = "--help" ]; then
+ command spack cd -h;
+ else
+ LOC="$(spack location $_sp_arg "$@")";
+ if [ -d "$LOC" ]; then
+ cd "$LOC";
+ else
+ return 1;
+ fi;
+ fi;
+ return
+ ;;
+ "env")
+ _sp_arg="";
+ if [ -n "$1" ]; then
+ _sp_arg="$1";
+ shift;
+ fi;
+ if [ "$_sp_arg" = "-h" ] || [ "$_sp_arg" = "--help" ]; then
+ command spack env -h;
+ else
+ case $_sp_arg in 
+ activate)
+ _a=" $@";
+ if [ -z ${1+x} ] || [ "${_a#* --sh}" != "$_a" ] || [ "${_a#* --csh}" != "$_a" ] || [ "${_a#* -h}" != "$_a" ] || [ "${_a#* --help}" != "$_a" ]; then
+ command spack env activate "$@";
+ else
+ stdout="$(command spack $_sp_flags env activate --sh "$@")" || return;
+ eval "$stdout";
+ fi
+ ;;
+ deactivate)
+ _a=" $@";
+ if [ "${_a#* --sh}" != "$_a" ] || [ "${_a#* --csh}" != "$_a" ]; then
+ command spack env deactivate "$@";
+ else
+ if [ -n "$*" ]; then
+ command spack env deactivate -h;
+ else
+ stdout="$(command spack $_sp_flags env deactivate --sh)" || return;
+ eval "$stdout";
+ fi;
+ fi
+ ;;
+ *)
+ command spack env $_sp_arg "$@"
+ ;;
+ esac;
+ fi;
+ return
+ ;;
+ "load" | "unload")
+ _a=" $@";
+ if [ "${_a#* --sh}" != "$_a" ] || [ "${_a#* --csh}" != "$_a" ] || [ "${_a#* -h}" != "$_a" ] || [ "${_a#* --list}" != "$_a" ] || [ "${_a#* --help}" != "$_a" ]; then
+ command spack $_sp_flags $_sp_subcommand "$@";
+ else
+ stdout="$(command spack $_sp_flags $_sp_subcommand --sh "$@")" || return;
+ eval "$stdout";
+ fi
+ ;;
+ *)
+ command spack $_sp_flags $_sp_subcommand "$@"
+ ;;
+ esac
+}; export -f BASH_FUNC__spack_shell_wrapper%%
+function BASH_FUNC_ml%%() {  eval $($LMOD_DIR/ml_cmd "$@")
+}; export -f BASH_FUNC_ml%%
+function BASH_FUNC_module%%() {  eval $($LMOD_CMD bash "$@") && eval $(${LMOD_SETTARG_CMD:-:} -s sh)
+}; export -f BASH_FUNC_module%%
+function BASH_FUNC_spack%%() {  : this is a shell function from: /lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/share/spack/setup-env.sh;
+ : the real spack script is here: /lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/bin/spack;
+ _spack_shell_wrapper "$@";
+ return $?
+}; export -f BASH_FUNC_spack%%
+C3_RSH='ssh -oConnectTimeout=10 -oForwardX11=no'; export C3_RSH
+CC=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/intel/icc; export CC
+CLASSPATH=/pe/intel/compilers_and_libraries_2020.4.304/linux/mpi/intel64/lib/mpi.jar; export CLASSPATH
+CMAKE_PREFIX_PATH=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-fortran-4.5.4-cry7dbu:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-c-4.7.4-e65xq45:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/hdf5-1.10.6-xc2opw5:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/libxml2-2.10.3-7vjuutq:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/zlib-1.2.11-ij722et:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/xz-5.2.6-ilrrzhx:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/libiconv-1.16-inla2gw:/opt/cray/pe/mpich/8.1.9/ofi/intel/19.0; export CMAKE_PREFIX_PATH
+COLORTERM=1; export COLORTERM
+CONFIG_SITE=''; export CONFIG_SITE
+CPATH=/pe/intel/compilers_and_libraries_2020.4.304/linux/ipp/include:/pe/intel/compilers_and_libraries_2020.4.304/linux/mkl/include:/pe/intel/compilers_and_libraries_2020.4.304/linux/pstl/include:/pe/intel/compilers_and_libraries_2020.4.304/linux/pstl/stdlib:/pe/intel/compilers_and_libraries_2020.4.304/linux/tbb/include; export CPATH
+CPU=x86_64; export CPU
+CRAYPE_DIR=/opt/cray/pe/craype/2.7.13; export CRAYPE_DIR
+CRAYPE_NETWORK_TARGET=ofi; export CRAYPE_NETWORK_TARGET
+CRAYPE_VERSION=2.7.13; export CRAYPE_VERSION
+CRAY_CPU_TARGET=x86-rome; export CRAY_CPU_TARGET
+CRAY_LD_LIBRARY_PATH=/opt/cray/pe/mpich/8.1.9/ofi/intel/19.0/lib; export CRAY_LD_LIBRARY_PATH
+CRAY_LMOD_COMPILER=intel/19.0; export CRAY_LMOD_COMPILER
+CRAY_LMOD_CPU=x86-rome/1.0; export CRAY_LMOD_CPU
+CRAY_LMOD_MPI=cray-mpich/8.0; export CRAY_LMOD_MPI
+CRAY_LMOD_NET=ofi/1.0; export CRAY_LMOD_NET
+CRAY_MPICH_BASEDIR=/opt/cray/pe/mpich/8.1.9/ofi; export CRAY_MPICH_BASEDIR
+CRAY_MPICH_DIR=/opt/cray/pe/mpich/8.1.9/ofi/intel/19.0; export CRAY_MPICH_DIR
+CRAY_MPICH_PREFIX=/opt/cray/pe/mpich/8.1.9/ofi/intel/19.0; export CRAY_MPICH_PREFIX
+CRAY_MPICH_ROOTDIR=/opt/cray/pe/mpich/8.1.9; export CRAY_MPICH_ROOTDIR
+CRAY_MPICH_VER=8.1.9; export CRAY_MPICH_VER
+CRAY_MPICH_VERSION=8.1.9; export CRAY_MPICH_VERSION
+CSHEDIT=emacs; export CSHEDIT
+CVS_RSH=ssh; export CVS_RSH
+CXX=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/intel/icpc; export CXX
+DISPLAY=localhost:10.0; export DISPLAY
+EDITOR=vim; export EDITOR
+F77=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/intel/ifort; export F77
+FC=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/intel/ifort; export FC
+FROM_HEADER=''; export FROM_HEADER
+GPG_TTY=/dev/pts/0; export GPG_TTY
+G_BROKEN_FILENAMES=1; export G_BROKEN_FILENAMES
+G_FILENAME_ENCODING=@locale,UTF-8,ISO-8859-15,CP1252; export G_FILENAME_ENCODING
+HISTFILESIZE=200000; export HISTFILESIZE
+HISTSIZE=1000; export HISTSIZE
+HOME=/u/alexander.richert; export HOME
+HOST=alogin02; export HOST
+HOSTNAME=alogin02; export HOSTNAME
+HOSTTYPE=x86_64; export HOSTTYPE
+HPC_OPT=/apps/ops/prod/libs; export HPC_OPT
+INFOPATH=/pe/intel/documentation_2020/en/debugger/gdb-ia/info::/apps/docs/info; export INFOPATH
+INTEL_LICENSE_FILE=/pe/intel/compilers_and_libraries_2020.4.304/linux/licenses:/opt/intel/licenses:/intel/licenses; export INTEL_LICENSE_FILE
+INTEL_MAJOR_VERSION=19.1; export INTEL_MAJOR_VERSION
+INTEL_MINOR_VERSION=3.304; export INTEL_MINOR_VERSION
+INTEL_PATH=/pe/intel/compilers_and_libraries_2020.4.304; export INTEL_PATH
+INTEL_PYTHONHOME=/pe/intel/debugger_2020/python/intel64/; export INTEL_PYTHONHOME
+INTEL_VERSION=19.1.3.304; export INTEL_VERSION
+IPPROOT=/pe/intel/compilers_and_libraries_2020.4.304/linux/ipp; export IPPROOT
+I_MPI_ROOT=/pe/intel/compilers_and_libraries_2020.4.304/linux/mpi; export I_MPI_ROOT
+LANG=en_US.UTF-8; export LANG
+LANGUAGE=en_US.UTF-8; export LANGUAGE
+LC_ALL=C; export LC_ALL
+LC_TIME=C.UTF-8; export LC_TIME
+LD_LIBRARY_PATH=/opt/cray/libfabric/1.11.0.0./lib64:/pe/intel/compilers_and_libraries_2020.4.304/linux/compiler/lib/intel64_lin:/pe/intel/compilers_and_libraries_2020.4.304/linux/mpi/intel64/lib/release:/pe/intel/compilers_and_libraries_2020.4.304/linux/mpi/intel64/lib:/pe/intel/compilers_and_libraries_2020.4.304/linux/ipp/lib/intel64:/pe/intel/compilers_and_libraries_2020.4.304/linux/mkl/lib/intel64_lin:/pe/intel/compilers_and_libraries_2020.4.304/linux/tbb/lib/intel64/gcc4.8:/pe/intel/debugger_2020/python/intel64/lib:/pe/intel/debugger_2020/libipt/intel64/lib; export LD_LIBRARY_PATH
+LESS='-M -I -R'; export LESS
+LESSCLOSE='lessclose.sh %s %s'; export LESSCLOSE
+LESSKEY=/etc/lesskey.bin; export LESSKEY
+LESSOPEN='lessopen.sh %s'; export LESSOPEN
+LESS_ADVANCED_PREPROCESSOR=no; export LESS_ADVANCED_PREPROCESSOR
+LIBGL_DEBUG=quiet; export LIBGL_DEBUG
+LIBRARY_PATH=/pe/intel/compilers_and_libraries_2020.4.304/linux/ipp/lib/intel64:/pe/intel/compilers_and_libraries_2020.4.304/linux/compiler/lib/intel64_lin:/pe/intel/compilers_and_libraries_2020.4.304/linux/mkl/lib/intel64_lin:/pe/intel/compilers_and_libraries_2020.4.304/linux/tbb/lib/intel64/gcc4.8; export LIBRARY_PATH
+LMOD_ADMIN_FILE=/apps/prod/lmodules/admin.list; export LMOD_ADMIN_FILE
+LMOD_AVAIL_STYLE=en_grouped:system; export LMOD_AVAIL_STYLE
+LMOD_CMD=/usr/share/lmod/lmod/libexec/lmod; export LMOD_CMD
+LMOD_CUSTOM_CNCM_CRAYCLANG_10_0_OFI_1_0_X86_ROME_1_0_CRAY_MPICH_8_0_PREFIX=/apps/prod/lmodules/CCE_cray_mpich/11.0.4/cray-mpich/8.1.4; export LMOD_CUSTOM_CNCM_CRAYCLANG_10_0_OFI_1_0_X86_ROME_1_0_CRAY_MPICH_8_0_PREFIX
+LMOD_CUSTOM_CNCM_CRAYCLANG_10_0_UCX_1_0_PREFIX=/apps/prod/lmodules/cce/13.0.0:/apps/prod/lmodules/cce/12.0.3:/apps/prod/lmodules/cce/11.0.4; export LMOD_CUSTOM_CNCM_CRAYCLANG_10_0_UCX_1_0_PREFIX
+LMOD_CUSTOM_CNCM_CRAYCLANG_10_0_UCX_1_0_X86_ROME_1_0_CRAY_MPICH_8_0_PREFIX=/apps/prod/lmodules/CCE_cray_mpich/11.0.4/cray-mpich/8.1.4; export LMOD_CUSTOM_CNCM_CRAYCLANG_10_0_UCX_1_0_X86_ROME_1_0_CRAY_MPICH_8_0_PREFIX
+LMOD_CUSTOM_CNCM_GNU_8_0_OFI_1_0_X86_ROME_1_0_CRAY_MPICH_8_0_PREFIX=/apps/prod/lmodules/GCC_cray_mpich/10.2.0/cray-mpich/8.1.4; export LMOD_CUSTOM_CNCM_GNU_8_0_OFI_1_0_X86_ROME_1_0_CRAY_MPICH_8_0_PREFIX
+LMOD_CUSTOM_CNCM_GNU_8_0_UCX_1_0_X86_ROME_1_0_CRAY_MPICH_8_0_PREFIX=/apps/prod/lmodules/GCC_cray_mpich/10.2.0/cray-mpich/8.1.4; export LMOD_CUSTOM_CNCM_GNU_8_0_UCX_1_0_X86_ROME_1_0_CRAY_MPICH_8_0_PREFIX
+LMOD_CUSTOM_CNCM_INTEL_19_0_OFI_1_0_X86_ROME_1_0_CRAY_MPICH_8_0_PREFIX=/apps/prod/lmodules/INTEL_cray_mpich/19.1.3.304/cray-mpich/8.1.4:/apps/ops/prod/libs/modulefiles/mpi/intel/19.1.3.304/cray-mpich/8.1.4; export LMOD_CUSTOM_CNCM_INTEL_19_0_OFI_1_0_X86_ROME_1_0_CRAY_MPICH_8_0_PREFIX
+LMOD_CUSTOM_CNCM_INTEL_19_0_UCX_1_0_X86_ROME_1_0_CRAY_MPICH_8_0_PREFIX=/apps/prod/lmodules/INTEL_cray_mpich/19.1.3.304/cray-mpich/8.1.4:/apps/ops/prod/libs/modulefiles/mpi/intel/19.1.3.304/cray-mpich/8.1.4; export LMOD_CUSTOM_CNCM_INTEL_19_0_UCX_1_0_X86_ROME_1_0_CRAY_MPICH_8_0_PREFIX
+LMOD_CUSTOM_COMPILER_CRAYCLANG_10_0_PREFIX=/apps/prod/lmodules/cce/13.0.0:/apps/prod/lmodules/cce/12.0.3:/apps/prod/lmodules/cce/11.0.4; export LMOD_CUSTOM_COMPILER_CRAYCLANG_10_0_PREFIX
+LMOD_CUSTOM_COMPILER_GNU_8_0_PREFIX=/apps/prod/lmodules/gcc/11.2.0:/apps/prod/lmodules/gcc/10.2.0; export LMOD_CUSTOM_COMPILER_GNU_8_0_PREFIX
+LMOD_CUSTOM_COMPILER_GNU_8_0_UCX_1_0_PREFIX=/apps/prod/lmodules/gcc/11.2.0:/apps/prod/lmodules/gcc/10.2.0; export LMOD_CUSTOM_COMPILER_GNU_8_0_UCX_1_0_PREFIX
+LMOD_CUSTOM_COMPILER_INTEL_19_0_PREFIX=/apps/prod/lmodules/intel/19.1.3.304:/apps/ops/prod/libs/modulefiles/compiler/intel/19.1.3.304:/apps/ops/prod/nco/modulefiles/compiler/intel/19.1.3.304; export LMOD_CUSTOM_COMPILER_INTEL_19_0_PREFIX
+LMOD_CUSTOM_COMPILER_INTEL_19_0_UCX_1_0_PREFIX=/apps/prod/lmodules/intel/19.1.3.304:/apps/ops/prod/libs/modulefiles/compiler/intel/19.1.3.304:/apps/ops/prod/nco/modulefiles/compiler/intel/19.1.3.304; export LMOD_CUSTOM_COMPILER_INTEL_19_0_UCX_1_0_PREFIX
+LMOD_CUSTOM_PATHS=CNCM/apps/ops/prod/libs/modulefiles/mpi/intel/19.1.3.304/cray-mpich/8.1.4:CNCM/apps/prod/lmodules/INTEL_cray_mpich/19.1.3.304/cray-mpich/8.1.4:COMPILER/apps/ops/prod/nco/modulefiles/compiler/intel/19.1.3.304:COMPILER/apps/ops/prod/libs/modulefiles/compiler/intel/19.1.3.304:COMPILER/apps/prod/lmodules/intel/19.1.3.304; export LMOD_CUSTOM_PATHS
+LMOD_DIR=/usr/share/lmod/lmod/libexec; export LMOD_DIR
+LMOD_FAMILY_COMPILER=intel; export LMOD_FAMILY_COMPILER
+LMOD_FAMILY_COMPILER_VERSION=19.1.3.304; export LMOD_FAMILY_COMPILER_VERSION
+LMOD_FAMILY_CRAYPE=craype; export LMOD_FAMILY_CRAYPE
+LMOD_FAMILY_CRAYPE_CPU=craype-x86-rome; export LMOD_FAMILY_CRAYPE_CPU
+LMOD_FAMILY_CRAYPE_CPU_VERSION=false; export LMOD_FAMILY_CRAYPE_CPU_VERSION
+LMOD_FAMILY_CRAYPE_NETWORK=craype-network-ofi; export LMOD_FAMILY_CRAYPE_NETWORK
+LMOD_FAMILY_CRAYPE_NETWORK_VERSION=false; export LMOD_FAMILY_CRAYPE_NETWORK_VERSION
+LMOD_FAMILY_CRAYPE_VERSION=2.7.13; export LMOD_FAMILY_CRAYPE_VERSION
+LMOD_FAMILY_MPI=cray-mpich; export LMOD_FAMILY_MPI
+LMOD_FAMILY_MPI_VERSION=8.1.9; export LMOD_FAMILY_MPI_VERSION
+LMOD_FAMILY_PRGENV=PrgEnv-intel; export LMOD_FAMILY_PRGENV
+LMOD_FAMILY_PRGENV_VERSION=8.3.3; export LMOD_FAMILY_PRGENV_VERSION
+LMOD_IGNORE_CACHE=yes; export LMOD_IGNORE_CACHE
+LMOD_MODULERCFILE=/apps/prod/lmodules/.modulerc.lua; export LMOD_MODULERCFILE
+LMOD_PACKAGE_PATH=/apps/prod/lmodules; export LMOD_PACKAGE_PATH
+LMOD_PKG=/usr/share/lmod/lmod; export LMOD_PKG
+LMOD_ROOT=/usr/share/lmod; export LMOD_ROOT
+LMOD_SETTARG_FULL_SUPPORT=no; export LMOD_SETTARG_FULL_SUPPORT
+LMOD_SYSTEM_DEFAULT_MODULES=envvar/1.0; export LMOD_SYSTEM_DEFAULT_MODULES
+LMOD_VERSION=8.3.1; export LMOD_VERSION
+LMOD_sys=Linux; export LMOD_sys
+LOADEDMODULES=craype-x86-rome:envvar/1.0:PrgEnv-intel/8.3.3:intel/19.1.3.304:craype/2.7.13:libfabric/1.11.0.0.:craype-network-ofi:cray-mpich/8.1.9; export LOADEDMODULES
+LOGNAME=alexander.richert; export LOGNAME
+LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'; export LS_COLORS
+LS_OPTIONS='-N --color=tty -T 0'; export LS_OPTIONS
+MACHTYPE=x86_64-suse-linux; export MACHTYPE
+MAIL=/var/spool/mail/alexander.richert; export MAIL
+MANPATH=/opt/cray/pe/mpich/8.1.9/ofi/man:/opt/cray/pe/mpich/8.1.9/man/mpich:/opt/cray/libfabric/1.11.0.0./share/man:/opt/cray/pe/craype/2.7.13/man:/pe/intel/man/common:/pe/intel/compilers_and_libraries_2020.4.304/linux/mpi/man:/pe/intel/documentation_2020/en/debugger/gdb-ia/man:/usr/share/lmod/lmod/share/man:/usr/share/man:/opt/pbs/share/man:/opt/clmgr/man:/opt/sgi/share/man:/opt/clmgr/share/man:/opt/clmgr/lib/cm-cli/man; export MANPATH
+MINICOM='-c on'; export MINICOM
+MKLROOT=/pe/intel/compilers_and_libraries_2020.4.304/linux/mkl; export MKLROOT
+MODULEPATH='/apps/ops/prod/libs/modulefiles/mpi/intel/19.1.3.304/cray-mpich/8.1.4:/apps/prod/lmodules/INTEL_cray_mpich/19.1.3.304/cray-mpich/8.1.4:/opt/cray/pe/lmod/modulefiles/mpi/intel/19.0/ofi/1.0/cray-mpich/8.0:/opt/cray/pe/lmod/modulefiles/comnet/intel/19.0/ofi/1.0:/opt/cray/pe/lmod/modulefiles/net/ofi/1.0:/apps/ops/prod/nco/modulefiles/compiler/intel/19.1.3.304:/apps/ops/prod/libs/modulefiles/compiler/intel/19.1.3.304:/apps/prod/lmodules/intel/19.1.3.304:/apps/prod/lmodules/compiler/intel/19.0:/opt/cray/pe/lmod/modulefiles/cpu/x86-rome/1.0:/usr/share/modules:/usr/share/Modules/$MODULE_VERSION/modulefiles:/usr/share/modules/modulefiles:/opt/cray/pe/lmod/modulefiles/core:/opt/cray/pe/lmod/modulefiles/craype-targets/default:/apps/prod/lmodules/sys_core:/apps/ops/prod/nco/modulefiles/core:/apps/prod/lmodules/core:/opt/cray/modulefiles:/usr/share/modulefiles/Linux:/usr/share/modulefiles/Core:/usr/share/lmod/lmod/modulefiles/Core'; export MODULEPATH
+MODULESHOME=/usr/share/lmod/lmod; export MODULESHOME
+MODULES_SET_SHELL_STARTUP=0; export MODULES_SET_SHELL_STARTUP
+MODULE_VERSION=3.2.10; export MODULE_VERSION
+MODULE_VERSION_STACK=3.2.10; export MODULE_VERSION_STACK
+MORE=-sl; export MORE
+MPICC=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/intel/icc; export MPICC
+MPICH_CC=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/intel/icc; export MPICH_CC
+MPICH_CXX=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/intel/icpc; export MPICH_CXX
+MPICH_DIR=/opt/cray/pe/mpich/8.1.9/ofi/intel/19.0; export MPICH_DIR
+MPICH_F77=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/intel/ifort; export MPICH_F77
+MPICH_F90=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/intel/ifort; export MPICH_F90
+MPICH_FC=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/intel/ifort; export MPICH_FC
+MPICXX=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/intel/icpc; export MPICXX
+MPIF77=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/intel/ifort; export MPIF77
+MPIF90=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/intel/ifort; export MPIF90
+NLSPATH=/pe/intel/compilers_and_libraries_2020.4.304/linux/compiler/lib/intel64/locale/%l_%t/%N:/pe/intel/compilers_and_libraries_2020.4.304/linux/mkl/lib/intel64_lin/locale/%l_%t/%N:/pe/intel/debugger_2020/gdb/intel64/share/locale/%l_%t/%N; export NLSPATH
+NOSCRUB=/lfs/h1/emc/nceplibs/noscrub/alexander.richert; export NOSCRUB
+#OLDPWD=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa; export OLDPWD
+OMP_NUM_THREADS=1; export OMP_NUM_THREADS
+OSCAR_HOME=/opt/oscar; export OSCAR_HOME
+OSTYPE=linux; export OSTYPE
+PAGER=less; export PAGER
+PATH=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-fortran-4.5.4-cry7dbu/bin:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-c-4.7.4-e65xq45/.spack/spack-nc-config:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-c-4.7.4-e65xq45/bin:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/libxml2-2.10.3-7vjuutq/bin:/opt/cray/pe/mpich/8.1.9/ofi/intel/19.0/bin:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/intel:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/case-insensitive:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env:/opt/cray/libfabric/1.11.0.0./bin:/opt/cray/pe/craype/2.7.13/bin:/pe/intel/compilers_and_libraries_2020.4.304/linux/bin/intel64:/pe/intel/compilers_and_libraries_2020.4.304/linux/bin:/pe/intel/compilers_and_libraries_2020.4.304/linux/mpi/intel64/bin:/pe/intel/debugger_2020/gdb/intel64/bin:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-fortran-4.5.4-cry7dbu/bin:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-c-4.7.4-e65xq45/.spack/spack-nc-config:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-c-4.7.4-e65xq45/bin:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/libxml2-2.10.3-7vjuutq/bin:/opt/cray/pe/mpich/8.1.9/ofi/intel/19.0/bin:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/intel:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/case-insensitive:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/bin:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/spack-stack-acorn/spack/bin:/opt/clmgr/sbin:/opt/clmgr/bin:/opt/sgi/sbin:/opt/sgi/bin:/u/alexander.richert/bin:/usr/local/bin:/usr/bin:/bin:/usr/lib/mit/bin:/usr/lib/mit/sbin:/opt/pbs/bin:/sbin:/opt/cray/pe/bin; export PATH
+PELOCAL_PRGENV=true; export PELOCAL_PRGENV
+PE_ENV=INTEL; export PE_ENV
+PE_FORTRAN_PKGCONFIG_LIBS=mpichf90; export PE_FORTRAN_PKGCONFIG_LIBS
+PE_INTEL_FIXED_PKGCONFIG_PATH=/opt/cray/pe/mpich/8.1.9/ofi/intel/19.0/lib/pkgconfig; export PE_INTEL_FIXED_PKGCONFIG_PATH
+PE_MPICH_FIXED_PRGENV=INTEL; export PE_MPICH_FIXED_PRGENV
+PE_MPICH_FORTRAN_PKGCONFIG_LIBS=mpichf90; export PE_MPICH_FORTRAN_PKGCONFIG_LIBS
+PE_MPICH_GENCOMPILERS_INTEL=19.0; export PE_MPICH_GENCOMPILERS_INTEL
+PE_MPICH_GTL_DIR_amd_gfx906=-L/opt/cray/pe/mpich/8.1.9/gtl/lib; export PE_MPICH_GTL_DIR_amd_gfx906
+PE_MPICH_GTL_DIR_amd_gfx908=-L/opt/cray/pe/mpich/8.1.9/gtl/lib; export PE_MPICH_GTL_DIR_amd_gfx908
+PE_MPICH_GTL_DIR_nvidia70=-L/opt/cray/pe/mpich/8.1.9/gtl/lib; export PE_MPICH_GTL_DIR_nvidia70
+PE_MPICH_GTL_DIR_nvidia80=-L/opt/cray/pe/mpich/8.1.9/gtl/lib; export PE_MPICH_GTL_DIR_nvidia80
+PE_MPICH_GTL_LIBS_amd_gfx906=-lmpi_gtl_hsa; export PE_MPICH_GTL_LIBS_amd_gfx906
+PE_MPICH_GTL_LIBS_amd_gfx908=-lmpi_gtl_hsa; export PE_MPICH_GTL_LIBS_amd_gfx908
+PE_MPICH_GTL_LIBS_nvidia70=-lmpi_gtl_cuda; export PE_MPICH_GTL_LIBS_nvidia70
+PE_MPICH_GTL_LIBS_nvidia80=-lmpi_gtl_cuda; export PE_MPICH_GTL_LIBS_nvidia80
+PE_MPICH_MODULE_NAME=cray-mpich; export PE_MPICH_MODULE_NAME
+PE_MPICH_PKGCONFIG_LIBS=mpich; export PE_MPICH_PKGCONFIG_LIBS
+PE_MPICH_PKGCONFIG_VARIABLES=PE_MPICH_GTL_DIR_@accelerator@:PE_MPICH_GTL_LIBS_@accelerator@; export PE_MPICH_PKGCONFIG_VARIABLES
+PE_PERFTOOLS_MPICH_LIBDIR=/opt/cray/pe/mpich/8.1.9/ofi/intel/19.0/lib; export PE_PERFTOOLS_MPICH_LIBDIR
+PE_PKGCONFIG_LIBS=mpich; export PE_PKGCONFIG_LIBS
+PE_PKGCONFIG_PRODUCTS=PE_MPICH; export PE_PKGCONFIG_PRODUCTS
+PE_PRODUCT_LIST=CRAYPE:CRAYPE_X86_ROME; export PE_PRODUCT_LIST
+PKGCONFIG_ENABLED=1; export PKGCONFIG_ENABLED
+PKG_CONFIG_PATH=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-fortran-4.5.4-cry7dbu/lib/pkgconfig:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-c-4.7.4-e65xq45/lib/pkgconfig:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/hdf5-1.10.6-xc2opw5/lib/pkgconfig:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/libxml2-2.10.3-7vjuutq/lib/pkgconfig:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/zlib-1.2.11-ij722et/lib/pkgconfig:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/xz-5.2.6-ilrrzhx/lib/pkgconfig:/opt/cray/pe/mpich/8.1.9/ofi/intel/19.0/lib/pkgconfig:/opt/cray/libfabric/1.11.0.0./lib64/pkgconfig:/opt/cray/pe/craype/2.7.13/pkg-config:/pe/intel/compilers_and_libraries_2020.4.304/linux/mkl/bin/pkgconfig:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-fortran-4.5.4-cry7dbu/lib/pkgconfig:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-c-4.7.4-e65xq45/lib/pkgconfig:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/hdf5-1.10.6-xc2opw5/lib/pkgconfig:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/libxml2-2.10.3-7vjuutq/lib/pkgconfig:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/zlib-1.2.11-ij722et/lib/pkgconfig:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/xz-5.2.6-ilrrzhx/lib/pkgconfig:/opt/cray/pe/mpich/8.1.9/ofi/intel/19.0/lib/pkgconfig; export PKG_CONFIG_PATH
+PROFILEREAD=true; export PROFILEREAD
+PSTLROOT=/pe/intel/compilers_and_libraries_2020.4.304/linux/pstl; export PSTLROOT
+#PWD=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack; export PWD
+PYTHONSTARTUP=/etc/pythonstart; export PYTHONSTARTUP
+QT_SYSTEM_DIR=/usr/share/desktop-data; export QT_SYSTEM_DIR
+SHELL=/bin/bash; export SHELL
+SHLVL=18; export SHLVL
+SHORTHOST=alogin02; export SHORTHOST
+SPACK_CC=cc; export SPACK_CC
+SPACK_CC_RPATH_ARG=-Wl,-rpath,; export SPACK_CC_RPATH_ARG
+SPACK_COMPILER_FLAGS_KEEP=''; export SPACK_COMPILER_FLAGS_KEEP
+SPACK_COMPILER_FLAGS_REPLACE='-Werror-|-Wno-error= -Werror|-Wno-error'; export SPACK_COMPILER_FLAGS_REPLACE
+SPACK_COMPILER_IMPLICIT_RPATHS=/pe/intel/compilers_and_libraries_2020.4.304/linux/compiler/lib/intel64_lin; export SPACK_COMPILER_IMPLICIT_RPATHS
+SPACK_COMPILER_SPEC=intel@19.1.3.304; export SPACK_COMPILER_SPEC
+SPACK_CXX=CC; export SPACK_CXX
+SPACK_CXX_RPATH_ARG=-Wl,-rpath,; export SPACK_CXX_RPATH_ARG
+SPACK_DEBUG_LOG_DIR=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack; export SPACK_DEBUG_LOG_DIR
+SPACK_DEBUG_LOG_ID=esmf-6rxazwx; export SPACK_DEBUG_LOG_ID
+SPACK_DTAGS_TO_ADD=--disable-new-dtags; export SPACK_DTAGS_TO_ADD
+SPACK_DTAGS_TO_STRIP=--enable-new-dtags; export SPACK_DTAGS_TO_STRIP
+SPACK_ENV=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack; export SPACK_ENV
+SPACK_ENV_PATH=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/case-insensitive:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/intel; export SPACK_ENV_PATH
+SPACK_F77=ftn; export SPACK_F77
+SPACK_F77_RPATH_ARG=-Wl,-rpath,; export SPACK_F77_RPATH_ARG
+SPACK_FC=ftn; export SPACK_FC
+SPACK_FC_RPATH_ARG=-Wl,-rpath,; export SPACK_FC_RPATH_ARG
+SPACK_INCLUDE_DIRS=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-fortran-4.5.4-cry7dbu/include:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-c-4.7.4-e65xq45/include:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/hdf5-1.10.6-xc2opw5/include:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/libxml2-2.10.3-7vjuutq/include/libxml2:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/libxml2-2.10.3-7vjuutq/include:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/zlib-1.2.11-ij722et/include:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/xz-5.2.6-ilrrzhx/include:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/libiconv-1.16-inla2gw/include:/opt/cray/pe/mpich/8.1.9/ofi/intel/19.0/include; export SPACK_INCLUDE_DIRS
+SPACK_LD_LIBRARY_PATH=/opt/cray/libfabric/1.11.0.0./lib64:/pe/intel/compilers_and_libraries_2020.4.304/linux/compiler/lib/intel64_lin:/pe/intel/compilers_and_libraries_2020.4.304/linux/mpi/intel64/lib/release:/pe/intel/compilers_and_libraries_2020.4.304/linux/mpi/intel64/lib:/pe/intel/compilers_and_libraries_2020.4.304/linux/ipp/lib/intel64:/pe/intel/compilers_and_libraries_2020.4.304/linux/mkl/lib/intel64_lin:/pe/intel/compilers_and_libraries_2020.4.304/linux/tbb/lib/intel64/gcc4.8:/pe/intel/debugger_2020/python/intel64/lib:/pe/intel/debugger_2020/libipt/intel64/lib; export SPACK_LD_LIBRARY_PATH
+SPACK_LINKER_ARG=-Wl,; export SPACK_LINKER_ARG
+SPACK_LINK_DIRS=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-fortran-4.5.4-cry7dbu/lib:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-c-4.7.4-e65xq45/lib:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/hdf5-1.10.6-xc2opw5/lib:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/libxml2-2.10.3-7vjuutq/lib:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/zlib-1.2.11-ij722et/lib:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/xz-5.2.6-ilrrzhx/lib:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/libiconv-1.16-inla2gw/lib:/opt/cray/pe/mpich/8.1.9/ofi/intel/19.0/lib; export SPACK_LINK_DIRS
+SPACK_PYTHON=/usr/bin/python3; export SPACK_PYTHON
+SPACK_ROOT=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack; export SPACK_ROOT
+SPACK_RPATH_DIRS=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/esmf-8.3.0b09-6rxazwx/lib:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/esmf-8.3.0b09-6rxazwx/lib64:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-fortran-4.5.4-cry7dbu/lib:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-c-4.7.4-e65xq45/lib:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/hdf5-1.10.6-xc2opw5/lib:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/libxml2-2.10.3-7vjuutq/lib:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/zlib-1.2.11-ij722et/lib:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/xz-5.2.6-ilrrzhx/lib:/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/libiconv-1.16-inla2gw/lib:/opt/cray/pe/mpich/8.1.9/ofi/intel/19.0/lib; export SPACK_RPATH_DIRS
+SPACK_SHORT_SPEC='esmf@8.3.0b09%intel@19.1.3.304~debug~external-lapack+mpi+netcdf~parallelio+pio~pnetcdf~shared~xerces build_system=makefile arch=linux-sles15-zen2/6rxazwx'; export SPACK_SHORT_SPEC
+SPACK_STACK_DIR=/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa; export SPACK_STACK_DIR
+SPACK_SYSTEM_DIRS=/bin:/usr/bin:/usr/local/bin:/bin64:/usr/bin64:/usr/local/bin64:/include:/usr/include:/usr/local/include:/lib:/usr/lib:/usr/local/lib:/lib64:/usr/lib64:/usr/local/lib64:/:/usr:/usr/local; export SPACK_SYSTEM_DIRS
+SPACK_TARGET_ARGS='-march=core-avx2 -mtune=core-avx2'; export SPACK_TARGET_ARGS
+SSH_CLIENT='192.58.154.7 54634 22'; export SSH_CLIENT
+SSH_CONNECTION='192.58.154.7 54634 192.58.153.212 22'; export SSH_CONNECTION
+SSH_TTY=/dev/pts/0; export SSH_TTY
+TBBROOT=/pe/intel/compilers_and_libraries_2020.4.304/linux/tbb; export TBBROOT
+TERM=xterm-256color; export TERM
+TMOUT=1800; export TMOUT
+USER=alexander.richert; export USER
+USE_PCM_DB=2; export USE_PCM_DB
+VISUAL=vim; export VISUAL
+WINDOWMANAGER=xterm; export WINDOWMANAGER
+XAUTHLOCALHOSTNAME=alogin02; export XAUTHLOCALHOSTNAME
+XDG_CONFIG_DIRS=/etc/xdg; export XDG_CONFIG_DIRS
+XDG_DATA_DIRS=/usr/share; export XDG_DATA_DIRS
+XKEYSYMDB=/usr/X11R6/lib/X11/XKeysymDB; export XKEYSYMDB
+XNLSPATH=/usr/share/X11/nls; export XNLSPATH
+_=/usr/bin/awk; export _
+_LMFILES_=/opt/cray/pe/lmod/modulefiles/craype-targets/default/craype-x86-rome.lua:/apps/prod/lmodules/sys_core/envvar/1.0.lua:/opt/cray/pe/lmod/modulefiles/core/PrgEnv-intel/8.3.3.lua:/apps/prod/lmodules/core/intel/19.1.3.304.lua:/opt/cray/pe/lmod/modulefiles/core/craype/2.7.13.lua:/opt/cray/modulefiles/libfabric/1.11.0.0.:/opt/cray/pe/lmod/modulefiles/craype-targets/default/craype-network-ofi.lua:/opt/cray/pe/lmod/modulefiles/comnet/intel/19.0/ofi/1.0/cray-mpich/8.1.9.lua; export _LMFILES_
+_ModuleTable001_=X01vZHVsZVRhYmxlXz17WyJNVHZlcnNpb24iXT0zLFsiY19yZWJ1aWxkVGltZSJdPWZhbHNlLFsiY19zaG9ydFRpbWUiXT1mYWxzZSxkZXB0aFQ9e30sZmFtaWx5PXtbIlByZ0VudiJdPSJQcmdFbnYtaW50ZWwiLFsiY29tcGlsZXIiXT0iaW50ZWwiLFsiY3JheXBlIl09ImNyYXlwZSIsWyJjcmF5cGVfY3B1Il09ImNyYXlwZS14ODYtcm9tZSIsWyJjcmF5cGVfbmV0d29yayJdPSJjcmF5cGUtbmV0d29yay1vZmkiLFsibXBpIl09ImNyYXktbXBpY2giLH0sbVQ9e1siUHJnRW52LWludGVsIl09e1siZm4iXT0iL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY29yZS9QcmdFbnYtaW50ZWwvOC4zLjMubHVhIixbImZ1bGxOYW1lIl09IlByZ0Vudi1pbnRlbC84LjMuMyIsWyJs; export _ModuleTable001_
+_ModuleTable002_=b2FkT3JkZXIiXT0zLHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09IlByZ0Vudi1pbnRlbCIsfSxbImNyYXktbXBpY2giXT17WyJmbiJdPSIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9jb21uZXQvaW50ZWwvMTkuMC9vZmkvMS4wL2NyYXktbXBpY2gvOC4xLjkubHVhIixbImZ1bGxOYW1lIl09ImNyYXktbXBpY2gvOC4xLjkiLFsibG9hZE9yZGVyIl09OCxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0wLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjcmF5LW1waWNoLzguMS45Iix9LGNyYXlwZT17WyJmbiJdPSIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9jb3JlL2NyYXlwZS8yLjcuMTMu; export _ModuleTable002_
+_ModuleTable003_=bHVhIixbImZ1bGxOYW1lIl09ImNyYXlwZS8yLjcuMTMiLFsibG9hZE9yZGVyIl09NSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0wLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjcmF5cGUvMi43LjEzIix9LFsiY3JheXBlLW5ldHdvcmstb2ZpIl09e1siZm4iXT0iL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY3JheXBlLXRhcmdldHMvZGVmYXVsdC9jcmF5cGUtbmV0d29yay1vZmkubHVhIixbImZ1bGxOYW1lIl09ImNyYXlwZS1uZXR3b3JrLW9maSIsWyJsb2FkT3JkZXIiXT03LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImNyYXlwZS1uZXR3b3JrLW9maSIsfSxbImNyYXlwZS14ODYtcm9t; export _ModuleTable003_
+_ModuleTable004_=ZSJdPXtbImZuIl09Ii9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NyYXlwZS10YXJnZXRzL2RlZmF1bHQvY3JheXBlLXg4Ni1yb21lLmx1YSIsWyJmdWxsTmFtZSJdPSJjcmF5cGUteDg2LXJvbWUiLFsibG9hZE9yZGVyIl09MSxwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJjcmF5cGUteDg2LXJvbWUiLH0sZW52dmFyPXtbImZuIl09Ii9hcHBzL3Byb2QvbG1vZHVsZXMvc3lzX2NvcmUvZW52dmFyLzEuMC5sdWEiLFsiZnVsbE5hbWUiXT0iZW52dmFyLzEuMCIsWyJsb2FkT3JkZXIiXT0yLHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImVudnZhciIs; export _ModuleTable004_
+_ModuleTable005_=fSxpbnRlbD17WyJmbiJdPSIvYXBwcy9wcm9kL2xtb2R1bGVzL2NvcmUvaW50ZWwvMTkuMS4zLjMwNC5sdWEiLFsiZnVsbE5hbWUiXT0iaW50ZWwvMTkuMS4zLjMwNCIsWyJsb2FkT3JkZXIiXT00LHByb3BUPXt9LFsic3RhY2tEZXB0aCJdPTAsWyJzdGF0dXMiXT0iYWN0aXZlIixbInVzZXJOYW1lIl09ImludGVsLzE5LjEuMy4zMDQiLH0sbGliZmFicmljPXtbImZuIl09Ii9vcHQvY3JheS9tb2R1bGVmaWxlcy9saWJmYWJyaWMvMS4xMS4wLjAuIixbImZ1bGxOYW1lIl09ImxpYmZhYnJpYy8xLjExLjAuMC4iLFsibG9hZE9yZGVyIl09Nixwcm9wVD17fSxbInN0YWNrRGVwdGgiXT0xLFsic3RhdHVzIl09ImFjdGl2ZSIsWyJ1c2VyTmFtZSJdPSJsaWJmYWJyaWMiLH0sfSxtcGF0; export _ModuleTable005_
+_ModuleTable006_=aEE9eyIvYXBwcy9vcHMvcHJvZC9saWJzL21vZHVsZWZpbGVzL21waS9pbnRlbC8xOS4xLjMuMzA0L2NyYXktbXBpY2gvOC4xLjQiLCIvYXBwcy9wcm9kL2xtb2R1bGVzL0lOVEVMX2NyYXlfbXBpY2gvMTkuMS4zLjMwNC9jcmF5LW1waWNoLzguMS40IiwiL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvbXBpL2ludGVsLzE5LjAvb2ZpLzEuMC9jcmF5LW1waWNoLzguMCIsIi9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NvbW5ldC9pbnRlbC8xOS4wL29maS8xLjAiLCIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9uZXQvb2ZpLzEuMCIsIi9hcHBzL29wcy9wcm9kL25jby9tb2R1bGVmaWxlcy9jb21waWxlci9pbnRlbC8xOS4xLjMuMzA0IiwiL2FwcHMvb3Bz; export _ModuleTable006_
+_ModuleTable007_=L3Byb2QvbGlicy9tb2R1bGVmaWxlcy9jb21waWxlci9pbnRlbC8xOS4xLjMuMzA0IiwiL2FwcHMvcHJvZC9sbW9kdWxlcy9pbnRlbC8xOS4xLjMuMzA0IiwiL2FwcHMvcHJvZC9sbW9kdWxlcy9jb21waWxlci9pbnRlbC8xOS4wIiwiL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY3B1L3g4Ni1yb21lLzEuMCIsIi91c3Ivc2hhcmUvbW9kdWxlcyIsIi91c3Ivc2hhcmUvTW9kdWxlcy8kTU9EVUxFX1ZFUlNJT04vbW9kdWxlZmlsZXMiLCIvdXNyL3NoYXJlL21vZHVsZXMvbW9kdWxlZmlsZXMiLCIvb3B0L2NyYXkvcGUvbG1vZC9tb2R1bGVmaWxlcy9jb3JlIiwiL29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY3JheXBlLXRhcmdldHMvZGVmYXVsdCIsIi9hcHBzL3By; export _ModuleTable007_
+_ModuleTable008_=b2QvbG1vZHVsZXMvc3lzX2NvcmUiLCIvYXBwcy9vcHMvcHJvZC9uY28vbW9kdWxlZmlsZXMvY29yZSIsIi9hcHBzL3Byb2QvbG1vZHVsZXMvY29yZSIsIi9vcHQvY3JheS9tb2R1bGVmaWxlcyIsIi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMvTGludXgiLCIvdXNyL3NoYXJlL21vZHVsZWZpbGVzL0NvcmUiLCIvdXNyL3NoYXJlL2xtb2QvbG1vZC9tb2R1bGVmaWxlcy9Db3JlIix9LFsic3lzdGVtQmFzZU1QQVRIIl09Ii91c3Ivc2hhcmUvbW9kdWxlczovdXNyL3NoYXJlL01vZHVsZXMvJE1PRFVMRV9WRVJTSU9OL21vZHVsZWZpbGVzOi91c3Ivc2hhcmUvbW9kdWxlcy9tb2R1bGVmaWxlczovdXNyL3NoYXJlL21vZHVsZWZpbGVzL0xpbnV4Oi91c3Ivc2hhcmUvbW9kdWxlZmlsZXMv; export _ModuleTable008_
+_ModuleTable009_=Q29yZTovdXNyL3NoYXJlL2xtb2QvbG1vZC9tb2R1bGVmaWxlcy9Db3JlOi9vcHQvY3JheS9wZS9sbW9kL21vZHVsZWZpbGVzL2NvcmU6L29wdC9jcmF5L3BlL2xtb2QvbW9kdWxlZmlsZXMvY3JheXBlLXRhcmdldHMvZGVmYXVsdDovYXBwcy9wcm9kL2xtb2R1bGVzL3N5c19jb3JlOi9hcHBzL29wcy9wcm9kL25jby9tb2R1bGVmaWxlcy9jb3JlOi9hcHBzL3Byb2QvbG1vZHVsZXMvY29yZTovb3B0L2NyYXkvbW9kdWxlZmlsZXMiLH0=; export _ModuleTable009_
+_ModuleTable_Sz_=9; export _ModuleTable_Sz_
+__LMOD_REF_COUNT_CLASSPATH=/pe/intel/compilers_and_libraries_2020.4.304/linux/mpi/intel64/lib/mpi.jar:1; export __LMOD_REF_COUNT_CLASSPATH
+__LMOD_REF_COUNT_CPATH='/pe/intel/compilers_and_libraries_2020.4.304/linux/ipp/include:1;/pe/intel/compilers_and_libraries_2020.4.304/linux/mkl/include:1;/pe/intel/compilers_and_libraries_2020.4.304/linux/pstl/include:1;/pe/intel/compilers_and_libraries_2020.4.304/linux/pstl/stdlib:1;/pe/intel/compilers_and_libraries_2020.4.304/linux/tbb/include:2'; export __LMOD_REF_COUNT_CPATH
+__LMOD_REF_COUNT_CRAY_LD_LIBRARY_PATH=/opt/cray/pe/mpich/8.1.9/ofi/intel/19.0/lib:1; export __LMOD_REF_COUNT_CRAY_LD_LIBRARY_PATH
+__LMOD_REF_COUNT_INFOPATH='/pe/intel/documentation_2020/en/debugger/gdb-ia/info:1;/apps/docs/info:1'; export __LMOD_REF_COUNT_INFOPATH
+__LMOD_REF_COUNT_INTEL_LICENSE_FILE='/pe/intel/compilers_and_libraries_2020.4.304/linux/licenses:1;/opt/intel/licenses:1;/intel/licenses:1'; export __LMOD_REF_COUNT_INTEL_LICENSE_FILE
+__LMOD_REF_COUNT_LD_LIBRARY_PATH='/opt/cray/libfabric/1.11.0.0./lib64:1;/pe/intel/compilers_and_libraries_2020.4.304/linux/compiler/lib/intel64_lin:1;/pe/intel/compilers_and_libraries_2020.4.304/linux/mpi/intel64/lib/release:1;/pe/intel/compilers_and_libraries_2020.4.304/linux/mpi/intel64/lib:1;/pe/intel/compilers_and_libraries_2020.4.304/linux/ipp/lib/intel64:1;/pe/intel/compilers_and_libraries_2020.4.304/linux/mkl/lib/intel64_lin:1;/pe/intel/compilers_and_libraries_2020.4.304/linux/tbb/lib/intel64/gcc4.8:1;/pe/intel/debugger_2020/python/intel64/lib:1;/pe/intel/debugger_2020/libipt/intel64/lib:1'; export __LMOD_REF_COUNT_LD_LIBRARY_PATH
+__LMOD_REF_COUNT_LIBRARY_PATH='/pe/intel/compilers_and_libraries_2020.4.304/linux/ipp/lib/intel64:1;/pe/intel/compilers_and_libraries_2020.4.304/linux/compiler/lib/intel64_lin:1;/pe/intel/compilers_and_libraries_2020.4.304/linux/mkl/lib/intel64_lin:1;/pe/intel/compilers_and_libraries_2020.4.304/linux/tbb/lib/intel64/gcc4.8:2'; export __LMOD_REF_COUNT_LIBRARY_PATH
+__LMOD_REF_COUNT_LMOD_CUSTOM_PATHS='CNCM/apps/ops/prod/libs/modulefiles/mpi/intel/19.1.3.304/cray-mpich/8.1.4:1;CNCM/apps/prod/lmodules/INTEL_cray_mpich/19.1.3.304/cray-mpich/8.1.4:1;COMPILER/apps/ops/prod/nco/modulefiles/compiler/intel/19.1.3.304:1;COMPILER/apps/ops/prod/libs/modulefiles/compiler/intel/19.1.3.304:1;COMPILER/apps/prod/lmodules/intel/19.1.3.304:1'; export __LMOD_REF_COUNT_LMOD_CUSTOM_PATHS
+__LMOD_REF_COUNT_LOADEDMODULES='craype-x86-rome:1;envvar/1.0:1;PrgEnv-intel/8.3.3:1;intel/19.1.3.304:1;craype/2.7.13:1;libfabric/1.11.0.0.:1;craype-network-ofi:1;cray-mpich/8.1.9:1'; export __LMOD_REF_COUNT_LOADEDMODULES
+__LMOD_REF_COUNT_MANPATH='/opt/cray/pe/mpich/8.1.9/ofi/man:1;/opt/cray/pe/mpich/8.1.9/man/mpich:1;/opt/cray/libfabric/1.11.0.0./share/man:1;/opt/cray/pe/craype/2.7.13/man:1;/pe/intel/man/common:1;/pe/intel/compilers_and_libraries_2020.4.304/linux/mpi/man:1;/pe/intel/documentation_2020/en/debugger/gdb-ia/man:1;/usr/share/lmod/lmod/share/man:1;/usr/share/man:1;/opt/pbs/share/man:1;/opt/clmgr/man:1;/opt/sgi/share/man:1;/opt/clmgr/share/man:1;/opt/clmgr/lib/cm-cli/man:1'; export __LMOD_REF_COUNT_MANPATH
+__LMOD_REF_COUNT_MODULEPATH='/apps/ops/prod/libs/modulefiles/mpi/intel/19.1.3.304/cray-mpich/8.1.4:1;/apps/prod/lmodules/INTEL_cray_mpich/19.1.3.304/cray-mpich/8.1.4:1;/opt/cray/pe/lmod/modulefiles/mpi/intel/19.0/ofi/1.0/cray-mpich/8.0:3;/opt/cray/pe/lmod/modulefiles/comnet/intel/19.0/ofi/1.0:1;/opt/cray/pe/lmod/modulefiles/net/ofi/1.0:1;/apps/ops/prod/nco/modulefiles/compiler/intel/19.1.3.304:1;/apps/ops/prod/libs/modulefiles/compiler/intel/19.1.3.304:1;/apps/prod/lmodules/intel/19.1.3.304:1;/apps/prod/lmodules/compiler/intel/19.0:1;/opt/cray/pe/lmod/modulefiles/cpu/x86-rome/1.0:1;/usr/share/modules:1;/usr/share/Modules/$MODULE_VERSION/modulefiles:1;/usr/share/modules/modulefiles:1;/opt/cray/pe/lmod/modulefiles/core:1;/opt/cray/pe/lmod/modulefiles/craype-targets/default:1;/apps/prod/lmodules/sys_core:1;/apps/ops/prod/nco/modulefiles/core:1;/apps/prod/lmodules/core:1;/opt/cray/modulefiles:1;/usr/share/modulefiles/Linux:1;/usr/share/modulefiles/Core:1;/usr/share/lmod/lmod/modulefiles/Core:1'; export __LMOD_REF_COUNT_MODULEPATH
+__LMOD_REF_COUNT_NLSPATH='/pe/intel/compilers_and_libraries_2020.4.304/linux/compiler/lib/intel64/locale/%l_%t/%N:1;/pe/intel/compilers_and_libraries_2020.4.304/linux/mkl/lib/intel64_lin/locale/%l_%t/%N:1;/pe/intel/debugger_2020/gdb/intel64/share/locale/%l_%t/%N:1'; export __LMOD_REF_COUNT_NLSPATH
+__LMOD_REF_COUNT_PATH='/opt/cray/libfabric/1.11.0.0./bin:1;/opt/cray/pe/craype/2.7.13/bin:1;/pe/intel/compilers_and_libraries_2020.4.304/linux/bin/intel64:1;/pe/intel/compilers_and_libraries_2020.4.304/linux/bin:1;/pe/intel/compilers_and_libraries_2020.4.304/linux/mpi/intel64/bin:1;/pe/intel/debugger_2020/gdb/intel64/bin:1;/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-fortran-4.5.4-cry7dbu/bin:1;/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-c-4.7.4-e65xq45/.spack/spack-nc-config:1;/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-c-4.7.4-e65xq45/bin:1;/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/libxml2-2.10.3-7vjuutq/bin:1;/opt/cray/pe/mpich/8.1.9/ofi/intel/19.0/bin:1;/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/intel:1;/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env/case-insensitive:1;/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/lib/spack/env:1;/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/spack/bin:1;/lfs/h1/emc/nceplibs/noscrub/alexander.richert/spack-stack-acorn/spack/bin:1;/opt/clmgr/sbin:1;/opt/clmgr/bin:1;/opt/sgi/sbin:1;/opt/sgi/bin:1;/u/alexander.richert/bin:1;/usr/local/bin:1;/usr/bin:1;/bin:2;/usr/lib/mit/bin:1;/usr/lib/mit/sbin:1;/opt/pbs/bin:1;/sbin:1;/opt/cray/pe/bin:1'; export __LMOD_REF_COUNT_PATH
+__LMOD_REF_COUNT_PE_FORTRAN_PKGCONFIG_LIBS=mpichf90:1; export __LMOD_REF_COUNT_PE_FORTRAN_PKGCONFIG_LIBS
+__LMOD_REF_COUNT_PE_INTEL_FIXED_PKGCONFIG_PATH=/opt/cray/pe/mpich/8.1.9/ofi/intel/19.0/lib/pkgconfig:1; export __LMOD_REF_COUNT_PE_INTEL_FIXED_PKGCONFIG_PATH
+__LMOD_REF_COUNT_PE_MPICH_FIXED_PRGENV=INTEL:1; export __LMOD_REF_COUNT_PE_MPICH_FIXED_PRGENV
+__LMOD_REF_COUNT_PE_MPICH_FORTRAN_PKGCONFIG_LIBS=mpichf90:1; export __LMOD_REF_COUNT_PE_MPICH_FORTRAN_PKGCONFIG_LIBS
+__LMOD_REF_COUNT_PE_MPICH_GENCOMPILERS_INTEL=19.0:1; export __LMOD_REF_COUNT_PE_MPICH_GENCOMPILERS_INTEL
+__LMOD_REF_COUNT_PE_MPICH_PKGCONFIG_LIBS=mpich:1; export __LMOD_REF_COUNT_PE_MPICH_PKGCONFIG_LIBS
+__LMOD_REF_COUNT_PE_PKGCONFIG_LIBS=mpich:1; export __LMOD_REF_COUNT_PE_PKGCONFIG_LIBS
+__LMOD_REF_COUNT_PE_PKGCONFIG_PRODUCTS=PE_MPICH:1; export __LMOD_REF_COUNT_PE_PKGCONFIG_PRODUCTS
+__LMOD_REF_COUNT_PE_PRODUCT_LIST='CRAYPE:1;CRAYPE_X86_ROME:1'; export __LMOD_REF_COUNT_PE_PRODUCT_LIST
+__LMOD_REF_COUNT_PKG_CONFIG_PATH='/opt/cray/libfabric/1.11.0.0./lib64/pkgconfig:1;/opt/cray/pe/craype/2.7.13/pkg-config:1;/pe/intel/compilers_and_libraries_2020.4.304/linux/mkl/bin/pkgconfig:1;/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-fortran-4.5.4-cry7dbu/lib/pkgconfig:1;/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/netcdf-c-4.7.4-e65xq45/lib/pkgconfig:1;/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/hdf5-1.10.6-xc2opw5/lib/pkgconfig:1;/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/libxml2-2.10.3-7vjuutq/lib/pkgconfig:1;/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/zlib-1.2.11-ij722et/lib/pkgconfig:1;/lfs/h1/emc/nceplibs/noscrub/alexander.richert/ssa/envs/ufs_stack/install/intel/19.1.3.304/xz-5.2.6-ilrrzhx/lib/pkgconfig:1;/opt/cray/pe/mpich/8.1.9/ofi/intel/19.0/lib/pkgconfig:1'; export __LMOD_REF_COUNT_PKG_CONFIG_PATH
+__LMOD_REF_COUNT__LMFILES_='/opt/cray/pe/lmod/modulefiles/craype-targets/default/craype-x86-rome.lua:1;/apps/prod/lmodules/sys_core/envvar/1.0.lua:1;/opt/cray/pe/lmod/modulefiles/core/PrgEnv-intel/8.3.3.lua:1;/apps/prod/lmodules/core/intel/19.1.3.304.lua:1;/opt/cray/pe/lmod/modulefiles/core/craype/2.7.13.lua:1;/opt/cray/modulefiles/libfabric/1.11.0.0.:1;/opt/cray/pe/lmod/modulefiles/craype-targets/default/craype-network-ofi.lua:1;/opt/cray/pe/lmod/modulefiles/comnet/intel/19.0/ofi/1.0/cray-mpich/8.1.9.lua:1'; export __LMOD_REF_COUNT__LMFILES_

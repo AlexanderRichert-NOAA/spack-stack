@@ -11,7 +11,7 @@ spack-stack is a collaborative effort between:
 * [Earth Prediction Innovation Center (EPIC)](https://epic.noaa.gov/).
 
 spack-stack is a thin layer around the
-[spack](https://github.com/spack/spack) repository. Spack is a
+[Spack](https://github.com/spack/spack) repository. Spack is a
 community-supported, multi-platform, Python-based package manager
 developed by the Lawrence Livermore National Laboratory
 (LLNL). Spack is provided as a submodule to spack-stack so that a

@@ -1,19 +1,19 @@
 # spack-stack
 
-Spack-stack enables the installation of software required
+spack-stack enables the installation of software required
 for HPC system deployments of NOAA's Unified Forecast System (UFS) and
 other weather and climate models, including components of the Joint
 Effort for Data assimilation Integration (JEDI).
 
-Spack-stack is a collaborative effort between:
+spack-stack is a collaborative effort between:
 * [NOAA Environmental Modeling Center (EMC)](https://www.emc.ncep.noaa.gov/emc_new.php)
 * [UCAR Joint Center for Satellite Data Assimilation (JCSDA)](https://www.jcsda.org/)
 * [Earth Prediction Innovation Center (EPIC)](https://epic.noaa.gov/).
 
-Spack-stack is a thin layer around a fork of the
+spack-stack is a thin layer around the
 [spack](https://github.com/spack/spack) repository. Spack is a
 community-supported, multi-platform, Python-based package manager
-originally developed by the Lawrence Livermore National Laboratory
+developed by the Lawrence Livermore National Laboratory
 (LLNL). Spack is provided as a submodule to spack-stack so that a
 stable version can be referenced. For more information about spack see
 the [LLNL project page for
@@ -27,8 +27,9 @@ systems. Users can install the necessary packages for a particular
 application and later add the missing packages for another application
 without having to rebuild the entire stack.
 
-spack-stack is mainly a collection of Spack configuration files, but
-provides a Spack extension to simplify the installation process:
+spack-stack provides Spack configuration files for various sites and
+applications, extra packages found in two repositories, and Spack
+extensions that simplify the installation process:
 
 - `spack stack create` is provided to copy common, site-specific, and
   application-specific configuration files into a coherent Spack

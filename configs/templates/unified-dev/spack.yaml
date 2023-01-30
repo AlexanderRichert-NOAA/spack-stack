@@ -7,6 +7,8 @@ spack:
 
   definitions:
   - compilers: [insert-compiler-list]
+#  - compilers: ['%intel', '%gcc'] # to build with both your configured Intel and GNU compilers (see env/site/compilers.yaml)
+#  - compilers: ['%apple-clang'] # common case for macOS, where we only support the Apple clang compiler, together with gfortran
   - packages:
       - global-workflow-env@unified-dev
       #- gsi-env@unified-dev

@@ -4,8 +4,8 @@
   ##branch = develop
   #url = https://github.com/NOAA-EMC/spack
   #branch = jcsda_emc_spack_stack
-  url = https://github.com/climbfuji/spack
-  branch = feature/unified-env
+  url = https://github.com/AlexanderRichert-NOAA/spack
+	branch = auto_compiler_matrix
 [submodule "doc/CMakeModules"]
   path = doc/CMakeModules
   url = https://github.com/noaa-emc/cmakemodules

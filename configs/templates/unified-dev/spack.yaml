@@ -6,7 +6,7 @@ spack:
   include: []
 
   definitions:
-  - compilers: [populated-by-create-env]
+  - compilers: [insert-compiler-list]
   - packages:
       - global-workflow-env@unified-dev
       #- gsi-env@unified-dev

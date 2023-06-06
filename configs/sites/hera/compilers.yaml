@@ -11,8 +11,9 @@ compilers:
     modules:
     - intel/2022.1.2
     environment:
+      set:
+        PATH: '/apps/gnu/gcc-9.2.0/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin'
       prepend_path:
-        PATH: '/apps/gnu/gcc-9.2.0/bin'
         LD_LIBRARY_PATH: '/apps/gnu/gcc-9.2.0/lib64'
         CPATH: '/apps/gnu/gcc-9.2.0/include'
     extra_rpaths: []
@@ -38,5 +39,7 @@ compilers:
     operating_system: centos7
     modules:
     - gnu/9.2.0
-    environment: {}
+    environment:
+      set:
+        PATH: '/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin'
     extra_rpaths: []

@@ -12,8 +12,9 @@ compilers:
     modules:
     - intel/2022.1.2
     environment:
+      set:
+        PATH: '/apps/gcc-10.2.0/gcc-10.2.0/bin:/sbin:/usr/sbin:/bin:/usr/bin'
       prepend_path:
-        PATH: '/apps/gcc-10.2.0/gcc-10.2.0/bin'
         LD_LIBRARY_PATH: '/apps/gcc-10.2.0/gcc-10.2.0/lib64:/apps/gcc-10.2.0/gcc-10.2.0/contrib/lib'
         CPATH: '/apps/gcc-10.2.0/gcc-10.2.0/include'
     extra_rpaths: []
@@ -30,8 +31,8 @@ compilers:
     modules:
     - intel/2018.4
     environment:
+      set: '/apps/gcc-8/gcc-8.3.0/bin:/sbin:/usr/sbin:/bin:/usr/bin'
       prepend_path:
-        PATH: '/apps/gcc-8/gcc-8.3.0/bin'
         LD_LIBRARY_PATH: '/apps/gcc-8/gcc-8.3.0/lib64:/apps/gcc-8/gcc-8.3.0//lib:/apps/gcc-8/gcc-8.3.0/mpfr-4.0.2/lib:/apps/gcc-8/gcc-8.3.0/mpc-1.1.0/lib:/apps/gcc-8/gcc-8.3.0/gmp-6.1.2/lib'
         CPATH: '/apps/gcc-8/gcc-8.3.0/include'
     extra_rpaths: []
@@ -47,5 +48,7 @@ compilers:
     target: x86_64
     modules:
     - gcc/10.2.0
-    environment: {}
+    environment:
+      set:
+        PATH: '/apps/gcc-10.2.0/gcc-10.2.0/bin:/sbin:/usr/sbin:/bin:/usr/bin'
     extra_rpaths: []

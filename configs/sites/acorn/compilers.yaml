@@ -18,6 +18,7 @@ compilers:
         # Automake-based builds are installed in lib64 
         # which confuses some packages.
         CONFIG_SITE: ''
+        PATH: '/pe/intel/compilers_and_libraries_2020.4.304/linux/bin/intel64:/pe/intel/compilers_and_libraries_2020.4.304/linux/bin:/pe/intel/compilers_and_libraries_2020.4.304/linux/mpi/intel64/bin:/pe/intel/debugger_2020/gdb/intel64/bin:/opt/cray/pe/craype/2.7.13/bin:/opt/cray/libfabric/1.11.0.0./bin:/usr/bin:/bin'
     extra_rpaths: []
 - compiler:
     spec: gcc@11.2.0
@@ -38,4 +39,5 @@ compilers:
         # Automake-based builds are installed in lib64 
         # which confuses some packages.
         CONFIG_SITE: ''
+        PATH: '/opt/cray/pe/gcc/11.2.0/bin:/opt/cray/pe/craype/2.7.13/bin:/opt/cray/libfabric/1.11.0.0./bin:/usr/bin:/bin'
     extra_rpaths: []

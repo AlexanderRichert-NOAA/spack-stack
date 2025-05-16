@@ -43,4 +43,4 @@
         prefix: /usr
     meson:
       require:
-      - '@1.6.1'
+      - '@1.5.2'

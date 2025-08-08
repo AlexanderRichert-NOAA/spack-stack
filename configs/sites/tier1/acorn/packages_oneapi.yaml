@@ -35,3 +35,6 @@
     py-numpy:
       require::
       - '^[virtuals=lapack,blas] openblas'
+    scotch::
+      require:
+      - '@7.0.4 +mpi+metis~shared~threads~mpi_thread+noarch+esmumps'

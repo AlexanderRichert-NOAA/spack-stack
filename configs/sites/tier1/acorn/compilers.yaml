@@ -95,10 +95,13 @@ compilers:
       cxx: CC
       f77: ftn
       fc: ftn
-    flags: {}
+    flags:
+      cflags: '--gcc-toolchain=/opt/cray/pe/gcc/12.1.0/snos/'
+      fflags: '-gcc-name=/opt/cray/pe/gcc/12.1.0/snos/bin/gcc -gxx-name=/opt/cray/pe/gcc/12.1.0/snos/bin/g++'
+      cxxflags: '--gcc-toolchain=/opt/cray/pe/gcc/12.1.0/snos/'
     operating_system: sles15
     modules:
-    - PrgEnv-intel/8.5.0
+    - PrgEnv-intel/8.3.3
     - craype/2.7.17
     - intel-oneapi/2024.2
     - libfabric
@@ -113,6 +116,8 @@ compilers:
         # Automake-based builds are installed in lib64
         # which confuses some packages.
         CONFIG_SITE: ''
+        # Use ifort instead of ifx:
+        INTEL_COMPILER_TYPE: RECOMMENDED
     extra_rpaths: []
 - compiler:
     spec: gcc@12.1.0

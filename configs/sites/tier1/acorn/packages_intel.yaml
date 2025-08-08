@@ -60,7 +60,5 @@
         message: "2.0.5 is the last version to use C++14"
     patchelf:
       require: ['@0.13.1']
-    gettext:
-      require: ['@0.19.7']
     rhash:
       require: ['@1.3.5']

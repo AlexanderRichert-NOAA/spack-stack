@@ -8,7 +8,6 @@ case $hostname in
     . ${SPACK_STACK_DIR}/configs/sites/tier1/acorn/setup.sh
     ;;
 esac
-return
 
 export SPACK_STACK_DIR
 echo "Setting environment variable SPACK_STACK_DIR to ${SPACK_STACK_DIR}"

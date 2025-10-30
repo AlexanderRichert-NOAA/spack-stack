@@ -18,6 +18,7 @@ import collections
 from datetime import datetime
 import logging
 import os
+import socket
 import subprocess
 import yaml
 from contextlib import redirect_stdout, redirect_stderr
@@ -42,6 +43,11 @@ nowdate = datetime.now().strftime("%Y%m%d-%H%M")
 logdir = os.path.join(spack_stack_dir, "deploy_logs")
 os.makedirs(logdir, exist_ok=True)
 
+def get_site_and_tier():
+    fqdn = socket.getfqdn()
+    if "acorn.wcoss2" in fqdn:
+        return "acorn", "tier1"
+
 def get_env_dir_basename(deployment):
     base = deployment["template"]
     base = base.replace("unified-dev", "ue")
@@ -63,7 +69,7 @@ def is_deployment_requested(env_dir_basename, deployment, args):
 
 def get_create_env_settings(env_dir_basename, deployment, deployments):
     config_dict = {}
-    config_dict["site"] = "acorn"
+    config_dict["site"] = get_site_and_tier()[0]
     config_dict["template"] = deployment["template"]
     config_dict["dir"] = os.path.join(spack_stack_dir, "envs")
     config_dict["name"] = env_dir_basename
@@ -103,11 +109,11 @@ def run_batch_install(batch_config, deployment, env_dir_full_path, specs_str, lo
     subprocess.run(cmd, stdout=logfile, stderr=logfile, check=True)
 
 # Load deployments.yaml configuration
-print("Loading deployments.yaml")
-script_directory = os.path.dirname(os.path.abspath(__file__))
-deployments_yaml_path = os.path.join(script_directory, "deployments.yaml")
+site, tier = get_site_and_tier()
+deployments_yaml_path = os.path.join(spack_stack_dir, "configs", "sites", tier, site, "deployments.yaml")
 with open(deployments_yaml_path, "r") as f:
     deployments_yaml = yaml.safe_load(f)
+print(f"Loading deployments.yaml for site {site}")
 
 # Generate deployments object, including iterating over compilers
 deployments = collections.OrderedDict()

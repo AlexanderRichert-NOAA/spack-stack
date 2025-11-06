@@ -105,7 +105,7 @@ def run_batch_install(batch_config, deployment, env_dir_full_path, specs_str, lo
             "-l", "walltime=" + walltime + ",select=1:ncpus=12",
             "-V", "-Wblock=true", "--",
             which("spack").path, "--env", env_dir_full_path,
-            "install", "--concurrent-packages", "3", "--jobs", "4",
+            "install", "--fail-fast", "--concurrent-packages", "3", "--jobs", "4",
         ]
         cmd.extend(specs_str)
         subprocess.run(cmd, stdout=logfile, stderr=logfile, check=True)

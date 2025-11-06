@@ -46,6 +46,7 @@
     cray-mpich:
       externals:
       - spec: cray-mpich@8.1.9~wrappers
+        prefix: /opt/cray/pe/mpich/8.1.9/ofi/intel/19.0
         modules:
         - libfabric
         - craype-network-ofi

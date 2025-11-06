@@ -123,6 +123,8 @@ for _deployment in deployments_yaml["deployments"]:
         deployment = _deployment.copy()
         del(deployment["compilers"])
         deployment["compiler"] = _compiler
+        if "only_concretize_requested_packages" not in deployment:
+            deployment["only_concretize_requested_packages"] = False
         env_dir_basename = get_env_dir_basename(deployment)
         deployments[env_dir_basename] = deployment
         print(f"Registered deployment: {deployment['template']}/{deployment['compiler']} ({env_dir_basename})")
@@ -156,6 +158,13 @@ for env_dir_basename, deployment in deployments.items():
     stack_env.check_umask()
     env = spack.environment.Environment(env_dir_full_path)
     spack.environment.activate(env)
+
+    # Filter out unwanted packages before concretization
+    if deployment["only_concretize_requested_packages"]:
+        for root_spec in env.roots():
+            if root_spec.name not in deployment["packages_to_install"]:
+                env.remove(root_spec)
+        env.write()
 
     # Concretize environment
     concretize_args = SimpleNamespace(

@@ -94,19 +94,23 @@ def run_batch_install(batch_config, deployment, env_dir_full_path, specs_str, lo
         walltime = batch_config["default_walltime"]
     else:
         assert False, "Set deployment-specific walltime or batch_config:default_walltime" 
-    cmd = [
-        "qsub",
-        "-o", logfilepath + suffix,
-        "-e", logfilepath + suffix,
-        "-A", batch_config["account"],
-        "-q", batch_config["queue"],
-        "-l", "walltime=" + walltime + ",select=1:ncpus=12",
-        "-V", "-Wblock=true", "--",
-        which("spack").path, "--env", env_dir_full_path,
-        "install", "--concurrent-packages", "3", "--jobs", "4",
-    ]
-    cmd.extend(specs_str)
-    subprocess.run(cmd, stdout=logfile, stderr=logfile, check=True)
+
+    if batch_config["scheduler"] == "pbspro":
+        cmd = [
+            "qsub",
+            "-o", logfilepath + suffix,
+            "-e", logfilepath + suffix,
+            "-A", batch_config["account"],
+            "-q", batch_config["queue"],
+            "-l", "walltime=" + walltime + ",select=1:ncpus=12",
+            "-V", "-Wblock=true", "--",
+            which("spack").path, "--env", env_dir_full_path,
+            "install", "--concurrent-packages", "3", "--jobs", "4",
+        ]
+        cmd.extend(specs_str)
+        subprocess.run(cmd, stdout=logfile, stderr=logfile, check=True)
+    else:
+        assert False, "batch_config:scheduler must be pbspro"
 
 # Load deployments.yaml configuration
 site, tier = get_site_and_tier()

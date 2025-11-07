@@ -2,6 +2,8 @@ packages:
   #
   ### Compilers
   #
+  all:
+    prefer: ['%oneapi@2024.2.1']
   intel-oneapi-compilers:
     buildable: false
     externals:

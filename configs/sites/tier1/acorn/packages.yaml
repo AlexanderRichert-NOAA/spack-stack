@@ -20,6 +20,8 @@ packages:
   #
   gdal:
     require: ['~curl']
+  global-workflow-env:
+    require: ['~uwtools']
   icu4c:
     require: ['%gcc']
   libxslt:

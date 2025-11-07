@@ -45,10 +45,7 @@ packages:
             CONFIG_SITE: ''
   gcc-runtime:
     require: '%gcc@12.1.0'
-  ### General package/provider settings & MPI external
-  mpi:
-    buildable: false
-    require: ['cray-mpich@8.1.29']
+  ### General package/provider settings, including MPI external
   cray-mpich:
     externals:
     - spec: cray-mpich@8.1.29~wrappers
@@ -58,18 +55,14 @@ packages:
       - craype-network-ofi
       - cray-mpich/8.1.29
       - cray-pals
-  ### Disable MKL
-  intel-oneapi-mkl:
-    buildable: false
   blas:
-    require: ['openblas']
-  lapack:
     require: ['openblas']
   fftw-api:
     require: ['fftw']
-  ectrans:
-    require:: ['~mkl', '+fftw']
-  gsibec:
-    require: ['~mkl']
-  py-numpy:
-    require:: ['^[virtuals=lapack,blas] openblas']
+  lapack:
+    require: ['openblas']
+  mkl:
+    buildable: false
+  mpi:
+    buildable: false
+    require: ['cray-mpich@8.1.29']

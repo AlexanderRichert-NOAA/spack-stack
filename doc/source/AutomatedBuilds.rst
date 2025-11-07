@@ -52,4 +52,4 @@ In crontab, add:
 
 .. code-block:: console
 
-   0 1 * * SUN /path/to/spack-stack-auto-build/util/weekly_build/SpackStackBuildCache_AllSteps.sh $(date +\%y\%m\%d) /path/to/spack-stack/weekly_build acorn > /path/to/spack-stack/weekly_build/logs/cron.$(date +\%y\%m\%d).out 2>&1
+   0 1 * * SUN /path/to/spack-stack-auto-build/util/weekly_build/SpackStackBuildCache_AllSteps.sh $(date +\%y\%m\%d) /path/to/spack-stack/weekly_build wcoss2 > /path/to/spack-stack/weekly_build/logs/cron.$(date +\%y\%m\%d).out 2>&1

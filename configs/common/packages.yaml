@@ -80,7 +80,7 @@ packages:
       - '@3.4.0'
     # Attention - when updating the version also check the common modules.yaml
     # config and update the projections for lmod/tcl.
-    # Also, check the acorn and derecho site configs which have esmf modifications.
+    # Also, check the wcoss2 and derecho site configs which have esmf modifications.
     esmf:
       require:
       - ~xerces ~pnetcdf +shared +external-parallelio

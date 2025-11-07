@@ -41,8 +41,6 @@ packages:
     require: ['@2.6.4']
   gdal:
     variants: ~curl
-  git-lfs:
-    require: ['%gcc']
   icu4c:
     require: ['%gcc']
   ip:

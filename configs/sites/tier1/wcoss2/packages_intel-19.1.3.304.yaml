@@ -1,5 +1,7 @@
 packages:
+  #
   ### Compilers
+  #
   intel-oneapi-compilers-classic:
     buildable: false
     externals:
@@ -32,7 +34,9 @@ packages:
             CONFIG_SITE: ''
   gcc-runtime:
     require: '%gcc@10.3.0'
-### Provider settings, including MPI external
+  #
+  ### Provider settings, including MPI external
+  #
   cray-mpich:
     externals:
     - spec: cray-mpich@8.1.9~wrappers
@@ -42,7 +46,9 @@ packages:
       - craype-network-ofi
       - cray-mpich/8.1.9
       - cray-pals
-### Individual package settings (mostly using GCC and/or old versions on account of Intel 19 being old)
+  #
+  ### Individual package settings (mostly using GCC and/or old versions on account of Intel 19 being old)
+  #
   cdo:
     # 2.0.5 is the last version to use C++14
     require: ["@2.0.5"]

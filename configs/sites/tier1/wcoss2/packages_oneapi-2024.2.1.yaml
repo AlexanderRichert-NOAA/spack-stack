@@ -1,5 +1,7 @@
 packages:
+  #
   ### Compilers
+  #
   intel-oneapi-compilers:
     buildable: false
     externals:
@@ -45,7 +47,9 @@ packages:
             CONFIG_SITE: ''
   gcc-runtime:
     require: '%gcc@12.1.0'
+  #
   ### MPI external
+  #
   cray-mpich:
     externals:
     - spec: cray-mpich@8.1.29~wrappers
@@ -55,7 +59,9 @@ packages:
       - craype-network-ofi
       - cray-mpich/8.1.29
       - cray-pals
+  #
   ### Individual package settings
+  #
   apr:
     require: ['@:1.6', '%gcc']
   bison:

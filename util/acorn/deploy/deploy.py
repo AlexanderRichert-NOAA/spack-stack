@@ -50,7 +50,7 @@ os.makedirs(logdir, exist_ok=True)
 def get_site_and_tier():
     fqdn = socket.getfqdn()
     if "acorn.wcoss2" in fqdn:
-        return "wcoss2", "tier1"
+        return "acorn", "tier1"
 
 def get_env_dir_basename(deployment):
     base = deployment["template"]

@@ -3,13 +3,13 @@ packages:
   ### Providers
   #
   blas:
-    require: ['openblas']
+    require:: ['openblas']
   fftw-api:
     require: ['fftw']
   jpeg:
     require: ['libjpeg-turbo']
   lapack:
-    require: ['openblas']
+    require:: ['openblas']
   mkl:
     buildable: false
   mpi:
@@ -18,20 +18,12 @@ packages:
   #
   ### Individual package settings
   #
-  curl:
-    require: ['~nghttp2']
-  flex:
-    require: ['@2.6.4']
   gdal:
     require: ['~curl']
   icu4c:
     require: ['%gcc']
-  ip:
-    require: ['+alltests']
   libxslt:
     require: ['~crypto']
-  mapl:
-    require: ['~pflogger', '~fargparse', '~extdata2g']
   py-pandas:
     require:: ['~excel']
   subversion:

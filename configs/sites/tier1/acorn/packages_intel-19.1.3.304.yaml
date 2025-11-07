@@ -1,5 +1,5 @@
 packages:
-  ### Compilers / compiler runtimes
+  ### Compilers
   intel-oneapi-compilers-classic:
     buildable: false
     externals:
@@ -32,7 +32,7 @@ packages:
             CONFIG_SITE: ''
   gcc-runtime:
     require: '%gcc@10.3.0'
-### General package/provider settings, including MPI external
+### Provider settings, including MPI external
   cray-mpich:
     externals:
     - spec: cray-mpich@8.1.9~wrappers
@@ -42,17 +42,6 @@ packages:
       - craype-network-ofi
       - cray-mpich/8.1.9
       - cray-pals
-  blas:
-    require: ['openblas']
-  fftw-api:
-    require: ['fftw']
-  lapack:
-    require: ['openblas']
-  mkl:
-    buildable: false
-  mpi:
-    buildable: false
-    require: ['cray-mpich@8.1.9']
 ### Individual package settings (mostly using GCC and/or old versions on account of Intel 19 being old)
   cdo:
     # 2.0.5 is the last version to use C++14
@@ -60,14 +49,37 @@ packages:
   eccodes:
     # 2.25.0 is the last version to use C++11 (as opposed to C++17)
     require: ["@2.25.0"]
+  ecflow:
+    require::
+    - '@5.11.4'
+    - '+ui'
+    - 'cflags="-no-ipo" cxxflags="-no-ipo"'
+    - '^boost %gcc'
+    - '%intel'
   eckit:
     require: ["@1.23.1"]
+  ecmwf-atlas:
+    require: ['@:0.39']
+  ectrans:
+    require: ['@1.2.0']
   gettext:
     require: ['%gcc', '@0.21.1']
+  glib:
+    require: ['@:2.74.3']
   go:
     require: ['%gcc']
+  gsibec:
+    require: ['@1.2.1']
+  harfbuzz:
+    require: ['%gcc']
+  libffi:
+    require: ['@3.3']
+  libunistring:
+    require: ['@:1.0']
   patchelf:
     require: ['@0.13.1']
+  py-cython:
+    require:: ['@0.29.36']
   py-maturin:
     require: ['%gcc']
   py-numpy:

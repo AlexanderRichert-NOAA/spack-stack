@@ -20,6 +20,7 @@ import logging
 import os
 import socket
 import subprocess
+import sys
 import yaml
 from contextlib import redirect_stdout, redirect_stderr
 from types import SimpleNamespace
@@ -38,6 +39,9 @@ from spack import modules
 from spack.util.executable import which
 
 spack_stack_dir = os.getenv("SPACK_STACK_DIR")
+
+sys.path.append(os.path.join(spack_stack_dir, "util"))
+from show_duplicate_packages import show_duplicate_packages
 
 nowdate = datetime.now().strftime("%Y%m%d-%H%M")
 logdir = os.path.join(spack_stack_dir, "deploy_logs")
@@ -180,6 +184,13 @@ for env_dir_basename, deployment in deployments.items():
     print(f"... concretizing ...")
     with redirect_stdout(logfile), redirect_stderr(logfile):
         concretize(None, concretize_args)
+
+    # Check for duplicate packages
+    with open(os.path.join(env_dir_full_path, "spack.lock"), "r") as f:
+        json_to_check = f.read()
+    ignore_list = [] if "duplicates_to_ignore" not in deployment else deployment["duplicates_to_ignore"]
+    ret = show_duplicate_packages(json_to_check, ignore_list=ignore_list)
+    assert ret==0, "Duplicates found! Check spack.lock/show_duplicate_packages.py"
 
     # Fetch packages
     if "packages_to_install" in deployment:

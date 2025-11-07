@@ -84,12 +84,10 @@ packages:
     require: ['@:1.0']
   patchelf:
     require: ['@0.13.1']
-  py-cython:
-    require:: ['@0.29.36']
   py-maturin:
     require: ['%gcc']
   py-numpy:
-    require:: ['@1.26, '%gcc']
+    require:: ['@1.26', '%gcc']
   py-scipy:
     require: ['@1.10.1']
   rhash:

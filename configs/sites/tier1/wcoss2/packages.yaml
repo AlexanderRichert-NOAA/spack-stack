@@ -3,13 +3,13 @@ packages:
   ### Providers
   #
   blas:
-    require: ['openblas']
+    require:: ['openblas']
   fftw-api:
     require: ['fftw']
   jpeg:
-    require: libjpeg-turbo
+    require: ['libjpeg-turbo']
   lapack:
-    require: ['openblas']
+    require:: ['openblas']
   mkl:
     buildable: false
   mpi:
@@ -43,8 +43,6 @@ packages:
     variants: ~curl
   icu4c:
     require: ['%gcc']
-  ip:
-    require: ['+alltests']
   libxslt:
     require: ['~crypto']
   mapl:

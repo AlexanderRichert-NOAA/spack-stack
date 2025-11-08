@@ -91,7 +91,7 @@ def get_create_env_settings(env_dir_basename, deployment, deployments):
 
     return config_dict
 
-def run_batch_install(batch_config, deployment, env_dir_full_path, specs_str, logfile, logfilepath, suffix=".batch_install"):
+def run_batch_install(batch_config, deployment, env_dir_full_path, logfile, logfilepath, packages_to_install=[], suffix=".batch_install"):
     if "walltime" in deployment:
         walltime = deployment["walltime"]
     elif "default_walltime" in batch_config:
@@ -111,7 +111,8 @@ def run_batch_install(batch_config, deployment, env_dir_full_path, specs_str, lo
             which("spack").path, "--env", env_dir_full_path,
             "install", "--fail-fast", "--concurrent-packages", "3", "--jobs", "4",
         ]
-        cmd.extend(specs_str)
+        if packages_to_install:
+            cmd.extend(packages_to_install)
         subprocess.run(cmd, stdout=logfile, stderr=logfile, check=True)
     else:
         assert False, "batch_config:scheduler must be pbspro"
@@ -131,6 +132,8 @@ for _deployment in deployments_yaml["deployments"]:
         deployment = _deployment.copy()
         del(deployment["compilers"])
         deployment["compiler"] = _compiler
+        if "packages_to_install" not in deployment:
+            deployment["packages_to_install"] = []
         if "only_concretize_requested_packages" not in deployment:
             deployment["only_concretize_requested_packages"] = False
         env_dir_basename = get_env_dir_basename(deployment)
@@ -155,7 +158,7 @@ for env_dir_basename, deployment in deployments.items():
         os.rename(env_dir_full_path, backup_dir_full_path)
     logfilepath = os.path.join(logdir, nowdate + f".{deployment['template']}.{deployment['compiler']}.log")
     print(f"Log file: {logfilepath}")
-    logfile = open(logfilepath, "a")
+    logfile = open(logfilepath, "a", buffering=1)
     logfile.write(str(deployment) + "\n")
     logfile.write(str(stack_settings) + "\n")
     print(f"Creating environment for {deployment['template']}/{deployment['compiler']}")
@@ -193,30 +196,29 @@ for env_dir_basename, deployment in deployments.items():
     assert ret==0, "Duplicates found! Check spack.lock/show_duplicate_packages.py"
 
     # Fetch packages
-    if "packages_to_install" in deployment:
-        specs_str = deployment["packages_to_install"]
-    else:
-        specs_str = []
-    fetch_args = SimpleNamespace(
-        missing = True,
-        no_checksum = False,
-        dependencies = bool(specs_str),
-        specs = specs_str,
-    )
+#    fetch_kwargs = {"missing": True, "no_checksum": False, "dependencies": True}
+#    fetch_kwargs["specs"] = deployment["packages_to_install"]
+#    fetch_args = SimpleNamespace(**fetch_kwargs)
+#    print(f"... fetching packages ...")
+#    with redirect_stdout(logfile), redirect_stderr(logfile):
+#        fetch(None, fetch_args)
+#    logfile.write("Fetch complete.")
+
     print(f"... fetching packages ...")
-    with redirect_stdout(logfile), redirect_stderr(logfile):
-        fetch(None, fetch_args)
+    for spec in env.all_specs():
+        print(f"Fetching {spec.name}@{spec.version}")
+        spec.package.do_fetch()
 
     # Install packages
-    print("... installing" + (" specs: " +" ".join(specs_str) if specs_str else "") + " ...")
-    logfile.flush()
+    print("... installing", end="")
+    if deployment["packages_to_install"]:
+        print(" specs: " +" ".join(deployment["packages_to_install"]) + " ...")
     if args.no_scheduler:
-        specs = env.all_matching_specs(*specs_str)
+        specs = env.all_matching_specs(*(" ".join(deployment["packages_to_install"])))
         env.install_specs(specs)
     else:
         if not args.skip_go_rust_handling:
-            run_batch_install(deployments_yaml["batch_config"], deployment, env_dir_full_path, ["rust", "go"], logfile, logfilepath, suffix=".rustgo")
-            logfile.flush()
+            run_batch_install(deployments_yaml["batch_config"], deployment, env_dir_full_path, logfile, logfilepath, packages_to_install=["rust", "go"], suffix=".rustgo")
             shell_env = os.environ.copy()
             shell_env["SPACK_ENV"] = env_dir_full_path
             subprocess.run(
@@ -227,7 +229,6 @@ for env_dir_basename, deployment in deployments.items():
                 check=True,
                 text=True,
             )
-            logfile.flush()
             subprocess.run(
                 os.path.join(spack_stack_dir, "util", "fetch_go_deps.py"),
                 env=shell_env,
@@ -236,9 +237,7 @@ for env_dir_basename, deployment in deployments.items():
                 check=True,
                 text=True,
             )
-            logfile.flush()
-        run_batch_install(deployments_yaml["batch_config"], deployment, env_dir_full_path, specs_str, logfile, logfilepath)
-        logfile.flush()
+        run_batch_install(deployments_yaml["batch_config"], deployment, env_dir_full_path, logfile, logfilepath, packages_to_install=deployment["packages_to_install"])
 
     # Generate modules
     print(f"... writing package modules ...")
@@ -249,7 +248,6 @@ for env_dir_basename, deployment in deployments.items():
         check=True,
         text=True,
     )
-    logfile.flush()
 
     # Meta modules
     print(f"... writing metamodules ...")

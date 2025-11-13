@@ -5,12 +5,13 @@ import argparse
 parser = argparse.ArgumentParser(description="Your script description")
 
 parser.add_argument('-n', '--no-scheduler', action='store_true', help="Run installation on local node (no job scheduler)")
-parser.add_argument('-s', '--skip-go-rust-handling', action='store_true', help="Skip handling of Go/Rust dep fetching when using parallel job scheduler")
+parser.add_argument('-x', '--skip-go-rust-handling', action='store_true', help="Skip handling of Go/Rust dep fetching when using parallel job scheduler")
 parser.add_argument('-c', '--concretize-args', type=str, help="Concretize arguments (provide a single string)")
 parser.add_argument('-i', '--install-args', type=str, help="Install arguments (provide a single string)")
 parser.add_argument('-r', '--redeploy-existing', action='store_true', help="Redeploy existing deployments")
+parser.add_argument('-s', '--site', type=str, help='Site name override')
 
-parser.add_argument('deployments', nargs='*', help="List of deployments to apply (default is all)")
+parser.add_argument('deployments', nargs='*', help="List of deployments to apply (default is all; specify template+compiler with, e.g., 'unified-dev%oneapi')")
 
 args = parser.parse_args()
 
@@ -47,7 +48,11 @@ nowdate = datetime.now().strftime("%Y%m%d-%H%M")
 logdir = os.path.join(spack_stack_dir, "deploy_logs")
 os.makedirs(logdir, exist_ok=True)
 
-def get_site_and_tier():
+def get_site_and_tier(deployment={}):
+    if args.site:
+        return args.site, "tier1"
+    if "site" in deployment:
+        return deployment["site"], "tier1"
     fqdn = socket.getfqdn()
     if "acorn.wcoss2" in fqdn:
         return "acorn", "tier1"
@@ -63,9 +68,13 @@ def deployment_already_exists(env_dir_basename, args):
     return os.path.isdir(path_to_check)
 
 def is_deployment_requested(env_dir_basename, deployment, args):
-    if deployment["template"] in args.deployments:
+    template = deployment["template"]
+    template_and_compiler = deployment["template"] + "%" + deployment["compiler"]
+    if args.deployments and (template not in args.deployments) and (template_and_compiler not in args.deployments):
+        return False
+    if template in args.deployments:
         return True
-    if deployment["template"] + "/" + deployment["compiler"] in args.deployments:
+    if template_and_compiler in args.deployments:
         return True
     if args.redeploy_existing:
         return True
@@ -73,7 +82,7 @@ def is_deployment_requested(env_dir_basename, deployment, args):
 
 def get_create_env_settings(env_dir_basename, deployment, deployments):
     config_dict = {}
-    config_dict["site"] = get_site_and_tier()[0]
+    config_dict["site"] = get_site_and_tier(deployment=deployment)[0]
     config_dict["template"] = deployment["template"]
     config_dict["dir"] = os.path.join(spack_stack_dir, "envs")
     config_dict["name"] = env_dir_basename
@@ -109,13 +118,15 @@ def run_batch_install(batch_config, deployment, env_dir_full_path, logfile, logf
             "-l", "walltime=" + walltime + ",select=1:ncpus=12",
             "-V", "-Wblock=true", "--",
             which("spack").path, "--env", env_dir_full_path,
-            "install", "--fail-fast", "--concurrent-packages", "3", "--jobs", "4",
+            "install", "--fail-fast", "--show-log-on-error",
+            "--concurrent-packages", "4", "--jobs", "4",
         ]
-        if packages_to_install:
-            cmd.extend(packages_to_install)
-        subprocess.run(cmd, stdout=logfile, stderr=logfile, check=True)
     else:
         assert False, "batch_config:scheduler must be pbspro"
+    if packages_to_install:
+        cmd.extend(packages_to_install)
+    logfile.write("Launching batch job:\n%s\n" % " ".join(cmd))
+    subprocess.run(cmd, stdout=logfile, stderr=logfile, check=True)
 
 # Load deployments.yaml configuration
 site, tier = get_site_and_tier()
@@ -188,6 +199,7 @@ for env_dir_basename, deployment in deployments.items():
     with redirect_stdout(logfile), redirect_stderr(logfile):
         concretize(None, concretize_args)
 
+    print("... validating concretization ...")
     # Check for duplicate packages
     with open(os.path.join(env_dir_full_path, "spack.lock"), "r") as f:
         json_to_check = f.read()
@@ -195,28 +207,32 @@ for env_dir_basename, deployment in deployments.items():
     ret = show_duplicate_packages(json_to_check, ignore_list=ignore_list)
     assert ret==0, "Duplicates found! Check spack.lock/show_duplicate_packages.py"
 
-    # Fetch packages
-#    fetch_kwargs = {"missing": True, "no_checksum": False, "dependencies": True}
-#    fetch_kwargs["specs"] = deployment["packages_to_install"]
-#    fetch_args = SimpleNamespace(**fetch_kwargs)
-#    print(f"... fetching packages ...")
-#    with redirect_stdout(logfile), redirect_stderr(logfile):
-#        fetch(None, fetch_args)
-#    logfile.write("Fetch complete.")
+    # Fail if there packages that shouldn't be built with GCC are built with GCC:
+    if "allowed_gcc_packages" in deployment:
+        for spec in env.all_specs():
+            for language in ("c", "cxx", "fortran"):
+                if language not in spec: continue
+                compiler_name = spec[language].name
+                is_legal = not (compiler_name == "gcc" and spec.name not in deployment["allowed_gcc_packages"])
+                assert is_legal, f"spec '{spec.name}/{spec.dag_hash()}' to be built with GCC but not in 'allowed_gcc_packages'!"
 
+    # Fetch packages
     print(f"... fetching packages ...")
     for spec in env.all_specs():
-        print(f"Fetching {spec.name}@{spec.version}")
-        spec.package.do_fetch()
+        logfile.write(f"Fetching {spec.name}@{spec.version}/{spec.dag_hash(length=7)}\n")
+        with redirect_stdout(logfile), redirect_stderr(logfile):
+            spec.package.do_fetch()
 
     # Install packages
     print("... installing", end="")
     if deployment["packages_to_install"]:
-        print(" specs: " +" ".join(deployment["packages_to_install"]) + " ...")
+        print(" specs: " +" ".join(deployment["packages_to_install"]))
+    print(" ...")
     if args.no_scheduler:
         specs = env.all_matching_specs(*(" ".join(deployment["packages_to_install"])))
         env.install_specs(specs)
     else:
+        logfile.write("Starting install jobs via job scheduler...\n")
         if not args.skip_go_rust_handling:
             run_batch_install(deployments_yaml["batch_config"], deployment, env_dir_full_path, logfile, logfilepath, packages_to_install=["rust", "go"], suffix=".rustgo")
             shell_env = os.environ.copy()

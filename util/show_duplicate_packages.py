@@ -32,8 +32,6 @@ def show_duplicate_packages(json_to_check, ignore_list=[]):
         if len(dd[pkg_name])>1:
             print(dd[pkg_name])
             duplicates_found = True
-    sys.stderr.write("===\n%suplicates found%s\n" % (("D","!") if duplicates_found else ("No d",".")))
-    sys.stderr.flush()
     return int(duplicates_found)
 
 if __name__ == "__main__":
@@ -44,5 +42,7 @@ if __name__ == "__main__":
     basedir = spack_env if spack_env else "./"
     with open(os.path.join(basedir, "spack.lock"), "r") as f:
         json_to_check = f.read()
-    ret = show_duplicate_packages(json_to_check, ignore_list=[x[0] for x in args.i])
-    sys.exit(ret)
+    ndups = show_duplicate_packages(json_to_check, ignore_list=[x[0] for x in args.i])
+    sys.stderr.write("===\n%suplicates found%s\n" % (("D","!") if ndups else ("No d",".")))
+    sys.stderr.flush()
+    sys.exit(ndups)

@@ -5,12 +5,6 @@ modules:
     lmod:
       include:
       - python
-  nco: # spack module lmod refresh --name nco
-    enable::
-    - lmod
-    lmod:
-      include:
-      - python
       hierarchy:
       - mpi
       - hdf5_virtual

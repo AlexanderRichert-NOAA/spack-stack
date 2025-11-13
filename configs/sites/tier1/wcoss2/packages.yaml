@@ -20,17 +20,19 @@ packages:
   #
   # Use `require::` to override require's from common/packages.yaml,
   # and `require:<newline>  - '...'` to add to existing ones.
+  bacio:
+    require:: ['@2.4.1']
   boost:
     require::
-      - >-
-        @1.84 ~atomic +chrono +date_time +exception +filesystem ~graph ~iostreams
-        ~locale ~log ~math ~mpi ~numpy +pic +program_options +python ~random
-        +regex +serialization ~signals +system +test +thread +timer ~wave
-        visibility=hidden cxxstd=17
+    - '@1.84'
+    - ~atomic +chrono +date_time +exception +filesystem ~graph ~iostreams
+    - ~locale ~log ~math ~mpi ~numpy +pic +program_options +python ~random
+    - +regex +serialization +system +test +thread +timer ~wave
+    - visibility=hidden cxxstd=17
   cdo:
     require: ['grib2=none']
   crtm:
-    require: ['@2.4.0.1', '+fix']
+    require: ['+fix']
   curl:
     require: ['~nghttp2']
   ecmwf-atlas:
@@ -46,9 +48,11 @@ packages:
   libxslt:
     require: ['~crypto']
   mapl:
-    require: ['~pflogger', '~fargparse', '~extdata2g']
+    require:: ['@2.53', '~pflogger', '~fargparse', '~extdata2g']
+  nco:
+    require:: ['%oneapi']
   netcdf-c:
-    require:: ['+mpi', '~parallel-netcdf', '~dap', '~blosc', '~szip', 'build_system=autotools']
+    require:: ['@4.9.2', '+mpi', '~parallel-netcdf', '~dap', '~blosc', '~szip']
   py-pandas:
     require:: ['~excel']
   scotch:

@@ -4,6 +4,13 @@ packages:
   #
   all:
     prefer: ['%oneapi@2024.2.1']
+  c:
+    buildable: false
+  cxx:
+    buildable: false
+  fortran:
+    buildable: false
+    require: 'intel-oneapi-compilers'
   intel-oneapi-compilers:
     buildable: false
     externals:
@@ -82,6 +89,8 @@ packages:
     require: ['@1.2.1']
   libtiff:
     require: ['build_system=cmake']
+  nco:
+    require:: ['%oneapi']
   ninja:
     require: ['~re2c %gcc']
   pixman:

@@ -2,8 +2,6 @@ packages:
   #
   ### Compilers
   #
-  all:
-    prefer: ['%oneapi@2024.2.1']
   intel-oneapi-compilers:
     buildable: false
     externals:
@@ -82,6 +80,8 @@ packages:
     require: ['@1.2.1']
   libtiff:
     require: ['build_system=cmake']
+  nco:
+    require:: ['%oneapi']
   ninja:
     require: ['~re2c %gcc']
   pixman:

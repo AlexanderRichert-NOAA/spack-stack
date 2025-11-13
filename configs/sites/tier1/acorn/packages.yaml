@@ -1,4 +1,11 @@
 packages:
+  # Don't build compilers
+  c:
+    buildable: false
+  cxx:
+    buildable: false
+  fortran:
+    buildable: false
   #
   ### Providers
   #

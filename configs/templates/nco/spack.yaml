@@ -20,18 +20,19 @@ spack:
   - cfitsio
   - cmake
   - crtm@=2.4.0.1
+  - crtm@=3.1.2
   - curl
   - ecflow
   - eckit
   - ecmwf-atlas
   - eigen
-  - esmf@8.8.0
+  - esmf@=8.8.0
   - fckit
   - fms
   - g2
   - g2c
   - g2tmpl
-  - gdal@3.8.5
+  - gdal
   - geos
   - gfsio
   - gftl-shared
@@ -53,7 +54,7 @@ spack:
   - libxml2
   - libxrender
   - madis
-  - mapl@2.53.4 ^esmf@8.8.0
+  - mapl@=2.53.4 ^esmf@=8.8.0
   - mbedtls
   - met
   - metis
@@ -81,7 +82,7 @@ spack:
   - sp
   - subversion
   - udunits
-  - upp
+#  - upp # doesn't build with new crtm; old crtm doesn't build with oneapi and concretizing with gcc is a pain
   - w3emc
   - w3nco
   - wgrib2

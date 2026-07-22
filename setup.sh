@@ -22,6 +22,8 @@ case $hostname in
   *nautilus*)
     . ${SPACK_STACK_DIR}/configs/sites/tier1/nautilus/setup.sh
     ;;
+  andor) # update as appropriate
+    . ${SPACK_STACK_DIR}/configs/sites/tier2/nimbus-early-testing/setup.sh
 esac
 
 export SPACK_STACK_DIR

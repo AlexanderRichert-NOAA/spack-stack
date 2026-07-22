@@ -1,0 +1,27 @@
+# This template contains packages to be built with GCC that do *not* serve as link dependencies.
+# They are either standalone applications (ecflow, awscli) and/or build dependencies (cmake, gmake) used by the nco-sci environments.
+spack:
+  concretizer:
+    unify: true
+
+  config:
+    install_tree:
+      root: $env/install
+    deprecated: true
+
+  view: false
+
+  include: []
+
+  specs:
+  - awscli
+  - cmake@3
+  - ecflow
+  - gempak
+  - git
+  - git-lfs
+  - gmake
+  - imagemagick
+  - perl
+  - rsync
+  - subversion

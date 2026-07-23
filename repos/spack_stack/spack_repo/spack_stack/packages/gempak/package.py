@@ -28,11 +28,16 @@ class Gempak(MakefilePackage):
     depends_on("cxx", type="build")
     depends_on("fortran", type="build")
 
+    depends_on("motif")
     depends_on("libiconv") # for vendored libxml
 
     def flag_handler(self, name, flags):
         if name == "cflags" and self.spec.satisfies("%c=gcc@14:"):
             flags.append("-fpermissive")
+        if name == "cflags":
+            flags.append("-I%s" % self.spec["libiconv"].prefix.include)
+            flags.append("-L%s" % self.spec["libiconv"].prefix.lib)
+            flags.append("-liconv")
         if name == "fflags" and self.spec.satisfies("%fortran=gcc@14:"):
             flags.append("-std=legacy")
         return (flags, None, None)
@@ -96,15 +101,17 @@ class Gempak(MakefilePackage):
                 "-assume byterecl -extend-source -fpscomp logicals -nofor-main -assume byterecl",
                 makeinc,
             )
-        if not self.spec.satisfies("%gcc"):
-            filter_file("^CC = .+", "CC = %s" % self.spec["c"].name, makeinc)
-            filter_file("^FC = .+", "FC = %s" % self.spec["fortran"].name, makeinc)
+        #filter_file("^CC = .+", f"CC = {spack_cc}", makeinc)
+        #filter_file("^FC = .+", f"FC = {spack_fc}", makeinc)
         filter_file(
             "^(COPT = .+)", r"\1 %s" % " ".join(self.spec.compiler_flags["cflags"]), makeinc
         )
         filter_file(
             "^(FOPT = .+)", r"\1 %s -fallow-invalid-boz" % " ".join(self.spec.compiler_flags["fflags"]), makeinc
         )
+        filter_file("^X11LIBDIR.*=.*", "X11LIBDIR = -L%s" % self.spec["motif"].prefix.lib, makeinc)
+        filter_file("^MOTIFINC.*=.*", "MOTIFINC = -L%s" % self.spec["motif"].prefix.include, makeinc)
+        filter_file("^XWINCDIR.*=.*", "XWINCDIR = -L%s" % self.spec["motif"].prefix.include, makeinc)
         filter_file(r"make -s distclean \)", " )", "extlibs/zlib/Makefile")
         filter_file(r'test "\$gcc" -eq 1', "test 1", "extlibs/zlib/zlib/configure")
         filter_file(r'test -z "\$CC"', "test 1", "extlibs/zlib/zlib/configure")

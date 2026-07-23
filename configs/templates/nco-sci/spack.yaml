@@ -64,3 +64,4 @@ spack:
   - w3nco
   - wgrib2
   - wrf-io
+  - xml-fortran

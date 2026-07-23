@@ -1,11 +1,11 @@
 deployments:
 
   - template: "nco-core"
-    compilers: ["gcc@14.2.0"]
+    compilers: ["gcc@11.5.0"]
 
   - template: "nco-sci"
-    roots_as_externals_from: "nco-core%gcc@14.2.0"
-    compilers: ["oneapi@2026.1.0", "intel@2021.10.0", "gcc@14.2.0"]
+    roots_as_externals_from: "nco-core%gcc@11.5.0"
+    compilers: ["oneapi@2026.1.0", "intel@2021.10.0", "gcc@11.5.0"]
     duplicates_to_ignore: ["crtm", "crtm-fix"]
     exclude_includes: ["common/packages_oneapi.yaml"]
     write_metamodules: false

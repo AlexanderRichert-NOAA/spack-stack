@@ -29,17 +29,34 @@ class Gempak(MakefilePackage):
     depends_on("fortran", type="build")
 
     depends_on("motif")
+    depends_on("libxt")
+    depends_on("libsm")
+    depends_on("libxtst")
+    depends_on("libice")
+    depends_on("libxi")
+    depends_on("libxext")
     depends_on("libiconv") # for vendored libxml
 
     def flag_handler(self, name, flags):
-        if name == "cflags" and self.spec.satisfies("%c=gcc@14:"):
-            flags.append("-fpermissive")
         if name == "cflags":
+            noerrorflags = [
+                "-Wno-error=int-conversion",
+                "-Wno-error=implicit-int",
+                "-Wno-error=implicit-function-declaration",
+                "-Wno-error=incompatible-pointer-types",
+            ]
+            flags.extend(noerrorflags)
+        if name in ("cflags", "fflags"):
             flags.append("-I%s" % self.spec["libiconv"].prefix.include)
             flags.append("-L%s" % self.spec["libiconv"].prefix.lib)
             flags.append("-liconv")
-        if name == "fflags" and self.spec.satisfies("%fortran=gcc@14:"):
-            flags.append("-std=legacy")
+            if self.spec.satisfies("%intel-oneapi-compilers"):
+                flags.append("-Wno-unused-command-line-argument")
+        if name == "fflags":
+            if self.spec.satisfies("%fortran=gcc"):
+                flags.append("-std=legacy")
+            if self.spec.satisfies("%fortran=intel-oneapi-compilers"):
+                flags.extend(["-extend-source", "-nofor-main"])
         return (flags, None, None)
 
     def setup_build_environment(self, env):
@@ -101,17 +118,26 @@ class Gempak(MakefilePackage):
                 "-assume byterecl -extend-source -fpscomp logicals -nofor-main -assume byterecl",
                 makeinc,
             )
-        #filter_file("^CC = .+", f"CC = {spack_cc}", makeinc)
-        #filter_file("^FC = .+", f"FC = {spack_fc}", makeinc)
+        if not self.spec.satisfies("%gcc"):
+            filter_file("^CC = .+", f"CC = {spack_cc}", makeinc)
+            filter_file("^FC = .+", f"FC = {spack_fc}", makeinc)
         filter_file(
             "^(COPT = .+)", r"\1 %s" % " ".join(self.spec.compiler_flags["cflags"]), makeinc
         )
         filter_file(
             "^(FOPT = .+)", r"\1 %s -fallow-invalid-boz" % " ".join(self.spec.compiler_flags["fflags"]), makeinc
         )
-        filter_file("^X11LIBDIR.*=.*", "X11LIBDIR = -L%s" % self.spec["motif"].prefix.lib, makeinc)
-        filter_file("^MOTIFINC.*=.*", "MOTIFINC = -L%s" % self.spec["motif"].prefix.include, makeinc)
-        filter_file("^XWINCDIR.*=.*", "XWINCDIR = -L%s" % self.spec["motif"].prefix.include, makeinc)
+        ld_flags = []
+        header_flags = []
+        libnames = ("motif", "libxt", "libsm", "libxtst", "libice", "libxi", "libxext")
+        for lib in libnames:
+            libraries = find_libraries("*", root=self.spec[lib].prefix, recursive=True)
+            ld_flags.append(libraries.ld_flags)
+            headers = find_headers("*", root=self.spec[lib].prefix.include, recursive=True)
+            header_flags.append(headers.include_flags)
+        filter_file("^X11LIBDIR.*=.*", f"X11LIBDIR = %s" % " ".join(ld_flags), makeinc)
+        filter_file("^MOTIFINC.*=.*", f"MOTIFINC = %s" % " ".join(header_flags), makeinc)
+        filter_file("^XWINCDIR.*=.*", f"XWINCDIR = %s" % " ".join(header_flags), makeinc)
         filter_file(r"make -s distclean \)", " )", "extlibs/zlib/Makefile")
         filter_file(r'test "\$gcc" -eq 1', "test 1", "extlibs/zlib/zlib/configure")
         filter_file(r'test -z "\$CC"', "test 1", "extlibs/zlib/zlib/configure")

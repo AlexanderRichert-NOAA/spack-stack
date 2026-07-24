@@ -17,7 +17,6 @@ spack:
   - awscli
   - cmake@3
   - ecflow
-  - gempak
   - git
   - git-lfs
   - gmake
@@ -25,3 +24,11 @@ spack:
   - perl
   - rsync
   - subversion
+  # GEMPAK dependencies:
+  - motif
+  - libxt
+  - libsm
+  - libxtst
+  - libice
+  - libxi
+  - libxext

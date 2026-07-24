@@ -25,9 +25,11 @@ spack:
   - g2tmpl
 #  - gdal
 #  - geos
+  - gempak
   - gfsio
   - gftl-shared
   - grib-util
+  - gsi-ncdiag
   - gsl
 #  - gsl-lite
   - hdf5
@@ -45,7 +47,6 @@ spack:
   - metis
   - metplus
 #  - nccmp
-  - gsi-ncdiag
   - nco
 #  - ncview
   - nemsio

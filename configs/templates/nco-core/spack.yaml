@@ -32,3 +32,5 @@ spack:
   - libice
   - libxi
   - libxext
+  - libx11
+  - xproto

@@ -35,6 +35,8 @@ class Gempak(MakefilePackage):
     depends_on("libice")
     depends_on("libxi")
     depends_on("libxext")
+    depends_on("libx11")
+    depends_on("xproto")
     depends_on("libiconv") # for vendored libxml
 
     def flag_handler(self, name, flags):
@@ -129,7 +131,7 @@ class Gempak(MakefilePackage):
         )
         ld_flags = []
         header_flags = []
-        libnames = ("motif", "libxt", "libsm", "libxtst", "libice", "libxi", "libxext")
+        libnames = ("motif", "libxt", "libsm", "libxtst", "libice", "libxi", "libxext", "libx11", "xproto")
         for lib in libnames:
             libraries = find_libraries("*", root=self.spec[lib].prefix, recursive=True)
             ld_flags.append(libraries.ld_flags)

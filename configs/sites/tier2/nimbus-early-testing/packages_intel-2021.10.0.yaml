@@ -19,9 +19,9 @@ packages:
           cxx: /opt/intel/oneapi/compiler/2023.2.1/linux/bin/intel64/icpc
           fortran: /opt/intel/oneapi/compiler/2023.2.1/linux/bin/intel64/ifort
         flags:
-          cflags: '-gcc-name=/usr/bin/gcc-11 -gxx-name=/usr/bin/g++-11'
-          cxxflags: '-gcc-name=/usr/bin/gcc-11 -gxx-name=/usr/bin/g++-11'
-          fflags: '-gcc-name=/usr/bin/gcc-11 -gxx-name=/usr/bin/g++-11'
+          cflags: '-gcc-name=/usr/bin/gcc -gxx-name=/usr/bin/g++'
+          cxxflags: '-gcc-name=/usr/bin/gcc -gxx-name=/usr/bin/g++'
+          fflags: '-gcc-name=/usr/bin/gcc -gxx-name=/usr/bin/g++'
         environment:
           prepend_path:
             LD_LIBRARY_PATH: /opt/intel/oneapi/compiler/2023.2.1/linux/compiler/lib/intel64_lin/:/usr/lib/gcc/x86_64-linux-gnu/11/
@@ -37,9 +37,9 @@ packages:
       prefix: /usr
       extra_attributes:
         compilers:
-          c: /usr/bin/gcc-11
-          cxx: /usr/bin/g++-11
-          fortran: /usr/bin/gfortran-11
+          c: /usr/bin/gcc
+          cxx: /usr/bin/g++
+          fortran: /usr/bin/gfortran
   gcc-runtime:
     require: '%gcc@11.5.0'
   #

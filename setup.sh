@@ -2,29 +2,33 @@
 # Portable way to get current directory
 SPACK_STACK_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-hostname=$(hostname -f)
-case $hostname in
-  *acorn.wcoss2*)
-    . ${SPACK_STACK_DIR}/configs/sites/tier1/wcoss2/setup.sh
-    ;;
-  *atlantis*)
-    . ${SPACK_STACK_DIR}/configs/sites/tier1/atlantis/setup.sh
-    ;;
-  *blueback*)
-    . ${SPACK_STACK_DIR}/configs/sites/tier1/blueback/setup.sh
-    ;;
-  *derecho*)
-    . ${SPACK_STACK_DIR}/configs/sites/tier1/derecho/setup.sh
-    ;;
-  *narwhal*)
-    . ${SPACK_STACK_DIR}/configs/sites/tier1/narwhal/setup.sh
-    ;;
-  *nautilus*)
-    . ${SPACK_STACK_DIR}/configs/sites/tier1/nautilus/setup.sh
-    ;;
-  andor) # update as appropriate
-    . ${SPACK_STACK_DIR}/configs/sites/tier2/nimbus-early-testing/setup.sh
-esac
+if [ -z $SPACK_STACK_SITE ]; then
+  hostname=$(hostname -f)
+  case $hostname in
+    *acorn.wcoss2*)
+      . ${SPACK_STACK_DIR}/configs/sites/tier1/wcoss2/setup.sh
+      ;;
+    *atlantis*)
+      . ${SPACK_STACK_DIR}/configs/sites/tier1/atlantis/setup.sh
+      ;;
+    *blueback*)
+      . ${SPACK_STACK_DIR}/configs/sites/tier1/blueback/setup.sh
+      ;;
+    *derecho*)
+      . ${SPACK_STACK_DIR}/configs/sites/tier1/derecho/setup.sh
+      ;;
+    *narwhal*)
+      . ${SPACK_STACK_DIR}/configs/sites/tier1/narwhal/setup.sh
+      ;;
+    *nautilus*)
+      . ${SPACK_STACK_DIR}/configs/sites/tier1/nautilus/setup.sh
+      ;;
+    andor|*internal*)
+      . ${SPACK_STACK_DIR}/configs/sites/tier2/nimbus-early-testing/setup.sh
+  esac
+else
+  . ${SPACK_STACK_DIR}/configs/sites/${SPACK_STACK_TIER?"SPACK_STACK_TIER must also be set!"}/${SPACK_STACK_SITE}/setup.sh
+fi
 
 export SPACK_STACK_DIR
 echo "Setting environment variable SPACK_STACK_DIR to ${SPACK_STACK_DIR}"

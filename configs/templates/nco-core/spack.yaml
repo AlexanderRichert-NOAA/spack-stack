@@ -2,7 +2,7 @@
 # They are either standalone applications (ecflow, awscli) and/or build dependencies (cmake, gmake) used by the nco-sci environments.
 spack:
   concretizer:
-    unify: true
+    unify: when_possible
 
   config:
     install_tree:
@@ -16,6 +16,8 @@ spack:
   specs:
   - awscli
   - cmake@3
+  - crtm-fix@=3.1.2.0 # must match crtm version in nco-sci
+  - crtm-fix@=2.4.0.1_emc # must match crtm version in nco-sci
   - ecflow
   - git
   - git-lfs

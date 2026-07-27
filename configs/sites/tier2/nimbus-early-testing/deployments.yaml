@@ -2,12 +2,14 @@ deployments:
 
   - template: "nco-core"
     compilers: ["gcc@11.5.0"]
+    duplicates_to_ignore: ["crtm-fix"]
 
   - template: "nco-sci"
     roots_as_externals_from:
       env: "nco-core%gcc@11.5.0"
       specs:
       - cmake
+      - crtm-fix
       - git
       - git-lfs
       - gmake

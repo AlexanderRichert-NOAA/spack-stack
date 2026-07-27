@@ -12,23 +12,23 @@ packages:
     buildable: false
     externals:
     - spec: intel-oneapi-compilers-classic@2021.10.0
-      prefix: /opt/intel/oneapi/compiler/2023.2.4/linux
+      prefix: /opt/intel/oneapi/compiler/2023.2.1/linux
       extra_attributes:
         compilers:
-          c: /opt/intel/oneapi/compiler/2023.2.4/linux/bin/intel64/icc
-          cxx: /opt/intel/oneapi/compiler/2023.2.4/linux/bin/intel64/icpc
-          fortran: /opt/intel/oneapi/compiler/2023.2.4/linux/bin/intel64/ifort
+          c: /opt/intel/oneapi/compiler/2023.2.1/linux/bin/intel64/icc
+          cxx: /opt/intel/oneapi/compiler/2023.2.1/linux/bin/intel64/icpc
+          fortran: /opt/intel/oneapi/compiler/2023.2.1/linux/bin/intel64/ifort
         flags:
           cflags: '-gcc-name=/usr/bin/gcc-11 -gxx-name=/usr/bin/g++-11'
           cxxflags: '-gcc-name=/usr/bin/gcc-11 -gxx-name=/usr/bin/g++-11'
           fflags: '-gcc-name=/usr/bin/gcc-11 -gxx-name=/usr/bin/g++-11'
         environment:
           prepend_path:
-            LD_LIBRARY_PATH: /opt/intel/oneapi/compiler/2023.2.4/linux/compiler/lib/intel64_lin/:/usr/lib/gcc/x86_64-linux-gnu/11/
+            LD_LIBRARY_PATH: /opt/intel/oneapi/compiler/2023.2.1/linux/compiler/lib/intel64_lin/:/usr/lib/gcc/x86_64-linux-gnu/11/
             LIBRARY_PATH: /usr/lib/gcc/x86_64-linux-gnu/11/
             CPATH: /usr/lib/gcc/x86_64-linux-gnu/11/include/
         extra_rpaths:
-        - /opt/intel/oneapi/compiler/2023.2.4/linux/compiler/lib/intel64_lin/
+        - /opt/intel/oneapi/compiler/2023.2.1/linux/compiler/lib/intel64_lin/
         - /usr/lib/gcc/x86_64-linux-gnu/11/
   gcc:
     buildable: false

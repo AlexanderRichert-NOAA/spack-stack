@@ -1,5 +1,5 @@
-# This template contains packages to be built with GCC that do *not* serve as link dependencies.
-# They are either standalone applications (ecflow, awscli) and/or build dependencies (cmake, gmake) used by the nco-sci environments.
+# This template contains packages to be built with GCC that do *not* serve as link dependencies (apart from GEMPAK dependencies).
+# These packages are standalone applications (ecflow, awscli) and/or build dependencies (cmake, gmake) used by the nco-sci environments.
 spack:
   concretizer:
     unify: when_possible

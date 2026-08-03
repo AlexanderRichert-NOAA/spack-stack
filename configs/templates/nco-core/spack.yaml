@@ -16,8 +16,8 @@ spack:
   specs:
   - awscli
   - cmake@3
-  - crtm-fix@=3.1.2.0 # must match crtm version in nco-sci
-  - crtm-fix@=2.4.0.1_emc # must match crtm version in nco-sci
+  - crtm-fix@=3.1.2.0 # must be consistent with crtm version in nco-sci
+  - crtm-fix@=2.4.0.1_emc # must be consistent with crtm version in nco-sci
   - ecflow
   - git
   - git-lfs
